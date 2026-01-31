@@ -1,0 +1,22 @@
+{
+  "name": "afroluxe-mobile",
+  "displayName": "AfroLuxe Marketplace",
+  "slug": "afroluxe-mobile",
+  "version": "1.0.0",
+  "assetBundlePatterns": ["**/*"],
+  "ios": {
+    "supportsTabletMode": true,
+    "bundleIdentifier": "com.afroluxe.mobile"
+  },
+  "android": {
+    "package": "com.afroluxe.mobile",
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/adaptive-icon.png",
+      "backgroundImage": "./assets/adaptive-icon-bg.png"
+    }
+  },
+  "web": {
+    "favicon": "./assets/favicon.png"
+  },
+  "plugins": ["expo-router"]
+}
