@@ -18,6 +18,8 @@
     "@supabase/auth-helpers-nextjs": "^0.8.7",
     "framer-motion": "^10.16.0",
     "lucide-react": "^0.344.0",
+    "react-hook-form": "^7.53.0",
+    "@hookform/resolvers": "^3.9.0",
     "zustand": "^4.4.1",
     "@afroluxe/ui": "*",
     "@afroluxe/lib": "*"
