@@ -1,10 +1,13 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, Suspense } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Search, MapPin, Star, Filter, X, ChevronDown } from 'lucide-react'
 import { CATEGORIES } from '@afroluxe/lib'
+
+export const dynamic = 'force-dynamic'
 
 // Mock data - replace with real Supabase data
 const MOCK_VENDORS = [
@@ -356,6 +359,28 @@ const MOCK_VENDORS = [
 ]
 
 export default function SearchPage() {
+  return (
+    <Suspense fallback={<SearchPageSkeleton />}>
+      <SearchContent />
+    </Suspense>
+  )
+}
+
+function SearchPageSkeleton() {
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container-custom py-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-12 bg-primary rounded-lg" />
+          <div className="h-64 bg-primary rounded-lg" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function SearchContent() {
+  const searchParams = useSearchParams()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedLocation, setSelectedLocation] = useState('')
@@ -366,6 +391,15 @@ export default function SearchPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'categories'>('categories')
   const [appliedFilters, setAppliedFilters] = useState({ category: null as string | null, location: '', rating: 0, radius: 25 })
   const [tempFilters, setTempFilters] = useState({ category: null as string | null, location: '', rating: 0, radius: 25 })
+
+  // Handle category from query params
+  useEffect(() => {
+    const categoryParam = searchParams.get('category')
+    if (categoryParam) {
+      setAppliedFilters(prev => ({ ...prev, category: categoryParam }))
+      setTempFilters(prev => ({ ...prev, category: categoryParam }))
+    }
+  }, [searchParams])
 
   const filteredVendors = useMemo(() => {
     return MOCK_VENDORS.filter((vendor) => {

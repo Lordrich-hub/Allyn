@@ -136,16 +136,20 @@ export default function HomePage() {
             { emoji: '🏠', name: 'Home Services', count: '65+ vendors' },
             { emoji: '🎉', name: 'Event Planning', count: '50+ vendors' },
           ].map((category, index) => (
-            <motion.div
+            <Link
               key={category.name}
-              variants={itemVariants}
-              whileHover={{ scale: 1.05, y: -5 }}
-              className="card p-6 cursor-pointer hover:border-accent/50 transition-all group"
+              href={`/search?category=${encodeURIComponent(category.name)}`}
             >
-              <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{category.emoji}</div>
-              <h3 className="text-lg font-bold text-text mb-1">{category.name}</h3>
-              <p className="text-sm text-muted">{category.count}</p>
-            </motion.div>
+              <motion.div
+                variants={itemVariants}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="card p-6 cursor-pointer hover:border-accent/50 transition-all group h-full"
+              >
+                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{category.emoji}</div>
+                <h3 className="text-lg font-bold text-text mb-1">{category.name}</h3>
+                <p className="text-sm text-muted">{category.count}</p>
+              </motion.div>
+            </Link>
           ))}
         </motion.div>
       </section>
@@ -304,10 +308,15 @@ export default function HomePage() {
             <div>
               <h4 className="font-bold text-text mb-4">Services</h4>
               <ul className="space-y-2">
-                {['Hair & Beauty', 'Food & Catering', 'Tech Support', 'Event Planning'].map((link) => (
-                  <li key={link}>
-                    <Link href="/search" className="text-muted hover:text-accent text-sm transition-colors">
-                      {link}
+                {[
+                  { label: 'Hair & Beauty', category: 'Hair & Beauty' },
+                  { label: 'Food & Catering', category: 'Food & Catering' },
+                  { label: 'Tech Support', category: 'Tech Support' },
+                  { label: 'Event Planning', category: 'Event Planning' },
+                ].map((item) => (
+                  <li key={item.label}>
+                    <Link href={`/search?category=${encodeURIComponent(item.category)}`} className="text-muted hover:text-accent text-sm transition-colors">
+                      {item.label}
                     </Link>
                   </li>
                 ))}
@@ -318,10 +327,15 @@ export default function HomePage() {
             <div>
               <h4 className="font-bold text-text mb-4">Company</h4>
               <ul className="space-y-2">
-                {['About Us', 'Contact', 'Blog', 'Careers'].map((link) => (
-                  <li key={link}>
-                    <Link href="#" className="text-muted hover:text-accent text-sm transition-colors">
-                      {link}
+                {[
+                  { label: 'About Us', href: '/#about' },
+                  { label: 'Contact', href: '/#contact' },
+                  { label: 'Blog', href: '/#blog' },
+                  { label: 'Careers', href: '/#careers' },
+                ].map((item) => (
+                  <li key={item.label}>
+                    <Link href={item.href} className="text-muted hover:text-accent text-sm transition-colors">
+                      {item.label}
                     </Link>
                   </li>
                 ))}
@@ -332,10 +346,15 @@ export default function HomePage() {
             <div>
               <h4 className="font-bold text-text mb-4">Support</h4>
               <ul className="space-y-2">
-                {['Help Center', 'Privacy Policy', 'Terms of Service', 'Contact Support'].map((link) => (
-                  <li key={link}>
-                    <Link href="#" className="text-muted hover:text-accent text-sm transition-colors">
-                      {link}
+                {[
+                  { label: 'Help Center', href: '/help' },
+                  { label: 'Privacy Policy', href: '/privacy' },
+                  { label: 'Terms of Service', href: '/terms' },
+                  { label: 'Contact Support', href: '/contact' },
+                ].map((item) => (
+                  <li key={item.label}>
+                    <Link href={item.href} className="text-muted hover:text-accent text-sm transition-colors">
+                      {item.label}
                     </Link>
                   </li>
                 ))}
@@ -347,10 +366,14 @@ export default function HomePage() {
             <p className="text-muted text-sm">© 2026 Allyn Marketplace. All rights reserved. Built for the African diaspora in the UK.</p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <span className="text-muted text-sm">Follow us:</span>
-              {['Facebook', 'Instagram', 'Twitter'].map((social) => (
-                <Link key={social} href="#" className="text-muted hover:text-accent text-sm transition-colors">
-                  {social}
-                </Link>
+              {[
+                { name: 'Facebook', url: 'https://facebook.com/allynmarketplace' },
+                { name: 'Instagram', url: 'https://instagram.com/allynmarketplace' },
+                { name: 'Twitter', url: 'https://twitter.com/allynmarketplace' },
+              ].map((social) => (
+                <a key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-accent text-sm transition-colors">
+                  {social.name}
+                </a>
               ))}
             </div>
           </div>
