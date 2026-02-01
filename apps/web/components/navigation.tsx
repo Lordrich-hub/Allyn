@@ -51,7 +51,7 @@ export function Navigation() {
           </div>
 
           {/* Mobile Navigation */}
-          <div className="flex items-center gap-2">
+          <div className="flex md:hidden items-center gap-2">
             {isSignedIn ? (
               <Link href="/dashboard">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent-secondary flex items-center justify-center text-primary font-bold text-sm">
