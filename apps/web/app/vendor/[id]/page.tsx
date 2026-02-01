@@ -63,6 +63,18 @@ export default function VendorPage({ params }: { params: { id: string } }) {
   const [bookingDate, setBookingDate] = useState('')
   const [bookingTime, setBookingTime] = useState('')
   const [isFavorited, setIsFavorited] = useState(false)
+  const [bookingSuccess, setBookingSuccess] = useState(false)
+
+  const handleBooking = () => {
+    if (bookingDate && bookingTime) {
+      setBookingSuccess(true)
+      setTimeout(() => {
+        setBookingSuccess(false)
+        setBookingDate('')
+        setBookingTime('')
+      }, 3000)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -238,18 +250,30 @@ export default function VendorPage({ params }: { params: { id: string } }) {
               </select>
             </div>
 
+            {/* Success Message */}
+            {bookingSuccess && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm"
+              >
+                ✓ Booking confirmed! Check your messages.
+              </motion.div>
+            )}
+
             {/* Book Button */}
-            <Link
-              href={`/checkout?vendor=${VENDOR.id}&service=${selectedService.id}&date=${bookingDate}&time=${bookingTime}`}
-              className="w-full btn-primary py-3 rounded-lg font-semibold text-center"
+            <button
+              onClick={handleBooking}
+              disabled={!bookingDate || !bookingTime}
+              className="w-full btn-primary py-3 rounded-lg font-semibold disabled:opacity-50 transition-all"
             >
               Continue to Booking
-            </Link>
+            </button>
 
             {/* Message Vendor */}
-            <button className="w-full mt-3 btn-secondary py-3 rounded-lg font-semibold">
+            <Link href="/chat" className="w-full mt-3 btn-secondary py-3 rounded-lg font-semibold text-center block">
               Message Vendor
-            </button>
+            </Link>
           </motion.div>
         </div>
 
