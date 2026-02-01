@@ -4,14 +4,16 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react'
+import { Mail, Lock, ArrowRight, AlertCircle, CheckCircle, Loader } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SignInInput, signInSchema } from '@afroluxe/lib'
+import { signIn } from '@/app/actions/auth'
 
 export default function SignInPage() {
   const router = useRouter()
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   
   const { register, handleSubmit, formState: { errors } } = useForm<SignInInput>({
@@ -23,15 +25,19 @@ export default function SignInPage() {
       setLoading(true)
       setError('')
       
-      // TODO: Integrate with Supabase auth
-      console.log('Sign in attempt:', data)
+      const result = await signIn(data)
       
-      // Simulated success - redirect to dashboard
+      if (result.error) {
+        setError(result.error)
+        return
+      }
+      
+      setSuccess(true)
       setTimeout(() => {
         router.push('/dashboard')
-      }, 1000)
+      }, 500)
     } catch (err) {
-      setError('Invalid email or password')
+      setError('An error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -59,6 +65,18 @@ export default function SignInPage() {
         >
           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
           <p className="text-sm">{error}</p>
+        </motion.div>
+      )}
+
+      {/* Success Message */}
+      {success && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 flex gap-3 text-green-400"
+        >
+          <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <p className="text-sm">Sign in successful! Redirecting...</p>
         </motion.div>
       )}
 
@@ -109,7 +127,12 @@ export default function SignInPage() {
           disabled={loading}
           className="w-full btn-primary py-3 rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? 'Signing in...' : (
+          {loading ? (
+            <>
+              <Loader className="w-5 h-5 animate-spin" />
+              Signing in...
+            </>
+          ) : (
             <>
               Sign In
               <ArrowRight className="w-5 h-5" />

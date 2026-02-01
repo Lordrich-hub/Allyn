@@ -4,14 +4,16 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Mail, Lock, User, AlertCircle, ArrowRight, CheckCircle } from 'lucide-react'
+import { Mail, Lock, User, AlertCircle, ArrowRight, CheckCircle, Loader } from 'lucide-react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SignUpInput, signUpSchema } from '@afroluxe/lib'
+import { signUp } from '@/app/actions/auth'
 
 export default function SignUpPage() {
   const router = useRouter()
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   const [userType, setUserType] = useState<'customer' | 'vendor'>('customer')
   
@@ -24,13 +26,17 @@ export default function SignUpPage() {
       setLoading(true)
       setError('')
       
-      // TODO: Integrate with Supabase auth
-      console.log('Sign up attempt:', { ...data, userType })
+      const result = await signUp(data)
       
-      // Simulated success
+      if (result.error) {
+        setError(result.error)
+        return
+      }
+      
+      setSuccess(true)
       setTimeout(() => {
-        router.push(userType === 'vendor' ? '/dashboard/vendor/onboarding' : '/dashboard')
-      }, 1000)
+        router.push(userType === 'vendor' ? '/dashboard/vendor' : '/dashboard')
+      }, 500)
     } catch (err) {
       setError('Failed to create account. Please try again.')
     } finally {
@@ -81,6 +87,18 @@ export default function SignUpPage() {
         >
           <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
           <p className="text-sm">{error}</p>
+        </motion.div>
+      )}
+
+      {/* Success Message */}
+      {success && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 flex gap-3 text-green-400"
+        >
+          <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <p className="text-sm">Account created! Redirecting...</p>
         </motion.div>
       )}
 
@@ -165,7 +183,12 @@ export default function SignUpPage() {
           disabled={loading}
           className="w-full btn-primary py-3 rounded-lg font-semibold flex items-center justify-center gap-2 mt-6 disabled:opacity-50"
         >
-          {loading ? 'Creating Account...' : (
+          {loading ? (
+            <>
+              <Loader className="w-5 h-5 animate-spin" />
+              Creating Account...
+            </>
+          ) : (
             <>
               Create Account
               <ArrowRight className="w-5 h-5" />
