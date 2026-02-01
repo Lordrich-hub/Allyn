@@ -31,28 +31,42 @@ export function Navigation() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            <NavLink href="/search" icon={Search}>Search</NavLink>
-            <NavLink href="/chat" icon={MessageSquare}>Messages</NavLink>
-            
-            {/* User Avatar - Only show when signed in */}
-            {isSignedIn && (
+          <div className="hidden md:flex items-center gap-4">
+            {isSignedIn ? (
               <Link href="/dashboard" className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent-secondary flex items-center justify-center text-primary font-bold">
                   JD
                 </div>
               </Link>
+            ) : (
+              <>
+                <Link href="/signin" className="btn-secondary text-sm">
+                  Sign In
+                </Link>
+                <Link href="/signup" className="btn-primary text-sm">
+                  Sign Up
+                </Link>
+              </>
             )}
           </div>
 
           {/* Mobile Navigation */}
           <div className="flex items-center gap-2">
-            {isSignedIn && (
+            {isSignedIn ? (
               <Link href="/dashboard">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent-secondary flex items-center justify-center text-primary font-bold text-sm">
                   JD
                 </div>
               </Link>
+            ) : (
+              <>
+                <Link href="/signin" className="btn-secondary text-sm px-3 py-2">
+                  Sign In
+                </Link>
+                <Link href="/signup" className="btn-primary text-sm px-3 py-2">
+                  Sign Up
+                </Link>
+              </>
             )}
           </div>
         </div>

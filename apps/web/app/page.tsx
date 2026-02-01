@@ -7,21 +7,6 @@ import { Search, Star, Shield, ArrowRight } from 'lucide-react'
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Sticky Header */}
-      <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-sm border-b border-border">
-        <div className="container-custom py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gradient">Allyn</h1>
-          <nav className="flex gap-4">
-            <Link href="/signin" className="btn-secondary text-sm">
-              Sign In
-            </Link>
-            <Link href="/signup" className="btn-primary text-sm">
-              Sign Up
-            </Link>
-          </nav>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-accent-secondary/10" />
