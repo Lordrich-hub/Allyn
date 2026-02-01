@@ -10,7 +10,7 @@ export default function HomePage() {
       {/* Sticky Header */}
       <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-sm border-b border-border">
         <div className="container-custom py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gradient">AfroLuxe</h1>
+          <h1 className="text-2xl font-bold text-gradient">Allyn</h1>
           <nav className="flex gap-4">
             <Link href="/signin" className="btn-secondary text-sm">
               Sign In
@@ -71,7 +71,7 @@ export default function HomePage() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h3 className="text-3xl font-bold text-text mb-4">Why Choose AfroLuxe?</h3>
+          <h3 className="text-3xl font-bold text-text mb-4">Why Choose Us?</h3>
           <p className="text-muted text-lg">Trusted marketplace for the African diaspora</p>
         </motion.div>
 
@@ -136,7 +136,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t border-border bg-surface mt-20">
         <div className="container-custom py-8 text-center text-muted text-sm">
-          <p>© 2026 AfroLuxe Marketplace. Built for the African diaspora in the UK.</p>
+          <p>© 2026 Allyn Marketplace. Built for the African diaspora in the UK.</p>
         </div>
       </footer>
     </div>

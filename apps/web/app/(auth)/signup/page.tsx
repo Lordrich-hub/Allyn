@@ -53,7 +53,7 @@ export default function SignUpPage() {
     >
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-gradient mb-2">Join AfroLuxe</h1>
+        <h1 className="text-3xl font-bold text-gradient mb-2">Join Allyn</h1>
         <p className="text-muted">Create your account in minutes</p>
       </div>
 

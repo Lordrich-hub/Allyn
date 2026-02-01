@@ -53,7 +53,7 @@ export default function SignInPage() {
       {/* Header */}
       <div className="text-center">
         <h1 className="text-3xl font-bold text-gradient mb-2">Welcome Back</h1>
-        <p className="text-muted">Sign in to your AfroLuxe account</p>
+        <p className="text-muted">Sign in to your Allyn account</p>
       </div>
 
       {/* Error Message */}

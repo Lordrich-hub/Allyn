@@ -3,7 +3,7 @@ import './globals.css'
 import { Navigation } from '@/components/navigation'
 
 export const metadata: Metadata = {
-  title: 'AfroLuxe Marketplace - African Services in the UK',
+  title: 'Allyn Marketplace - African Services in the UK',
   description: 'Connect with verified African service providers in your area.',
 }
 

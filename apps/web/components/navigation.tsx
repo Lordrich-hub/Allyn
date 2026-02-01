@@ -2,10 +2,19 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Search, MessageSquare, User, LayoutDashboard } from 'lucide-react'
+import { Search, MessageSquare, User } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
 export function Navigation() {
   const pathname = usePathname()
+  const [isSignedIn, setIsSignedIn] = useState(false)
+  
+  // Check if user is signed in (mock - replace with real auth)
+  useEffect(() => {
+    // Check if we're on dashboard/vendor pages as proxy for signed in
+    const signedIn = pathname?.startsWith('/dashboard') || pathname?.startsWith('/chat')
+    setIsSignedIn(signedIn)
+  }, [pathname])
   
   // Hide navigation on auth pages
   if (pathname?.startsWith('/signin') || pathname?.startsWith('/signup')) {
@@ -17,23 +26,34 @@ export function Navigation() {
       <div className="container-custom">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="text-xl font-bold text-gradient">
+          <Link href="/" className="text-2xl font-bold text-gradient">
             Allyn
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <NavLink href="/" icon={Home}>Home</NavLink>
             <NavLink href="/search" icon={Search}>Search</NavLink>
             <NavLink href="/chat" icon={MessageSquare}>Messages</NavLink>
-            <NavLink href="/dashboard" icon={LayoutDashboard}>Dashboard</NavLink>
+            
+            {/* User Avatar - Only show when signed in */}
+            {isSignedIn && (
+              <Link href="/dashboard" className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent-secondary flex items-center justify-center text-primary font-bold">
+                  JD
+                </div>
+              </Link>
+            )}
           </div>
 
           {/* Mobile Navigation */}
-          <div className="flex md:hidden items-center gap-2">
-            <Link href="/dashboard" className="btn-primary px-4 py-2 rounded-lg text-sm">
-              Dashboard
-            </Link>
+          <div className="flex items-center gap-2">
+            {isSignedIn && (
+              <Link href="/dashboard">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent to-accent-secondary flex items-center justify-center text-primary font-bold text-sm">
+                  JD
+                </div>
+              </Link>
+            )}
           </div>
         </div>
       </div>
