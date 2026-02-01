@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { Navigation } from '@/components/navigation'
 
 export const metadata: Metadata = {
   title: 'AfroLuxe Marketplace - African Services in the UK',
@@ -14,6 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <Navigation />
         {children}
       </body>
     </html>

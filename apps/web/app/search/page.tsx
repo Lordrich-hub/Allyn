@@ -70,7 +70,9 @@ export default function SearchPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedLocation, setSelectedLocation] = useState('')
   const [minRating, setMinRating] = useState(0)
+  const [radiusMiles, setRadiusMiles] = useState(25)
   const [showFilters, setShowFilters] = useState(false)
+  const [useMyLocation, setUseMyLocation] = useState(false)
 
   const filteredVendors = useMemo(() => {
     return MOCK_VENDORS.filter((vendor) => {
@@ -84,6 +86,22 @@ export default function SearchPage() {
       return matchesSearch && matchesCategory && matchesLocation && matchesRating
     })
   }, [searchQuery, selectedCategory, selectedLocation, minRating])
+
+  const handleUseMyLocation = () => {
+    if ('geolocation' in navigator) {
+      setUseMyLocation(true)
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setSelectedLocation(`Current Location`)
+          console.log('Location:', position.coords.latitude, position.coords.longitude)
+        },
+        (error) => {
+          console.error('Error getting location:', error)
+          setUseMyLocation(false)
+        }
+      )
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -139,15 +157,43 @@ export default function SearchPage() {
               {/* Location Filter */}
               <div>
                 <label className="text-sm font-medium text-text block mb-2">Location</label>
-                <div className="relative">
-                  <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted pointer-events-none" />
-                  <input
-                    type="text"
-                    placeholder="City or postcode"
-                    value={selectedLocation}
-                    onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="w-full bg-primary border border-border rounded-lg pl-12 pr-4 py-2 text-text placeholder:text-muted/50 focus-ring"
-                  />
+                <div className="space-y-2">
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted pointer-events-none" />
+                    <input
+                      type="text"
+                      placeholder="City or postcode"
+                      value={selectedLocation}
+                      onChange={(e) => setSelectedLocation(e.target.value)}
+                      className="w-full bg-primary border border-border rounded-lg pl-12 pr-4 py-2 text-text placeholder:text-muted/50 focus-ring"
+                    />
+                  </div>
+                  <button
+                    onClick={handleUseMyLocation}
+                    className="text-sm text-accent hover:underline"
+                  >
+                    {useMyLocation ? '📍 Using current location' : '📍 Use my current location'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Radius Filter */}
+              <div>
+                <label className="text-sm font-medium text-text block mb-2">
+                  Search Radius: {radiusMiles} miles
+                </label>
+                <input
+                  type="range"
+                  min="1"
+                  max="50"
+                  step="1"
+                  value={radiusMiles}
+                  onChange={(e) => setRadiusMiles(parseInt(e.target.value))}
+                  className="w-full accent-accent"
+                />
+                <div className="flex justify-between text-xs text-muted mt-1">
+                  <span>1 mile</span>
+                  <span>50 miles</span>
                 </div>
               </div>
 
@@ -168,12 +214,14 @@ export default function SearchPage() {
               </div>
 
               {/* Clear Filters */}
-              {(selectedCategory || selectedLocation || minRating > 0) && (
+              {(selectedCategory || selectedLocation || minRating > 0 || radiusMiles !== 25) && (
                 <button
                   onClick={() => {
                     setSelectedCategory(null)
                     setSelectedLocation('')
                     setMinRating(0)
+                    setRadiusMiles(25)
+                    setUseMyLocation(false)
                   }}
                   className="w-full text-accent hover:underline text-sm font-medium"
                 >

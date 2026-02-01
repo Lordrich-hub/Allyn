@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Star, MapPin, Phone, Mail, Calendar, DollarSign, ChevronLeft, Heart, Share2, Clock } from 'lucide-react'
 
-// Mock vendor data
+// Mock vendor data with availability
 const VENDOR = {
   id: '1',
   name: 'Divine Hair Studio',
@@ -27,6 +27,22 @@ const VENDOR = {
     saturday: '09:00 - 19:00',
     sunday: 'Closed',
   },
+  // Vendor's available time slots per day
+  availability: {
+    monday: ['09:00', '11:00', '14:00', '16:00'],
+    tuesday: ['09:00', '11:00', '14:00', '16:00'],
+    wednesday: ['09:00', '11:00', '14:00', '16:00', '18:00'],
+    thursday: ['09:00', '11:00', '14:00', '16:00', '18:00'],
+    friday: ['09:00', '11:00', '14:00', '16:00', '18:00'],
+    saturday: ['09:00', '11:00', '13:00', '15:00', '17:00'],
+    sunday: [],
+  },
+  // Existing bookings to prevent double-booking
+  bookedSlots: [
+    { date: '2026-02-05', time: '11:00' },
+    { date: '2026-02-05', time: '14:00' },
+    { date: '2026-02-06', time: '09:00' },
+  ],
   services: [
     { id: '1', name: 'Box Braids', description: 'Professional box braids with various styles', price: 80, duration: '4-6 hours' },
     { id: '2', name: 'Cornrows', description: 'Traditional cornrow styling', price: 45, duration: '2-3 hours' },
@@ -65,6 +81,23 @@ export default function VendorPage({ params }: { params: { id: string } }) {
   const [isFavorited, setIsFavorited] = useState(false)
   const [bookingSuccess, setBookingSuccess] = useState(false)
 
+  // Get available time slots for selected date
+  const availableTimeSlots = useMemo(() => {
+    if (!bookingDate) return []
+    
+    const date = new Date(bookingDate)
+    const dayName = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
+    const daySlots = VENDOR.availability[dayName as keyof typeof VENDOR.availability] || []
+    
+    // Filter out already booked slots
+    return daySlots.filter(time => {
+      const isBooked = VENDOR.bookedSlots.some(
+        slot => slot.date === bookingDate && slot.time === time
+      )
+      return !isBooked
+    })
+  }, [bookingDate])
+
   const handleBooking = () => {
     if (bookingDate && bookingTime) {
       setBookingSuccess(true)
@@ -78,7 +111,6 @@ export default function VendorPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <div className="sticky top-0 z-30 bg-surface/95 backdrop-blur-sm border-b border-border">
         <div className="container-custom py-3 flex items-center justify-between">
           <Link href="/search" className="flex items-center gap-2 text-accent hover:underline">
@@ -88,91 +120,63 @@ export default function VendorPage({ params }: { params: { id: string } }) {
           <div className="flex gap-2">
             <button
               onClick={() => setIsFavorited(!isFavorited)}
-              className={`p-2 rounded-lg border transition-all ${
-                isFavorited
-                  ? 'bg-accent/10 border-accent text-accent'
-                  : 'border-border text-muted hover:border-accent'
-              }`}
+              className="p-2 rounded-lg border border-border hover:border-accent transition-colors"
             >
-              <Heart className={`w-5 h-5 ${isFavorited ? 'fill-current' : ''}`} />
+              <Heart className={`w-5 h-5 ${isFavorited ? 'fill-accent text-accent' : 'text-muted'}`} />
             </button>
-            <button className="p-2 rounded-lg border border-border text-muted hover:border-accent transition-all">
-              <Share2 className="w-5 h-5" />
+            <button className="p-2 rounded-lg border border-border hover:border-accent transition-colors">
+              <Share2 className="w-5 h-5 text-muted" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Hero Image */}
-      <div className="relative h-80 overflow-hidden">
-        <img src={VENDOR.image} alt={VENDOR.name} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-      </div>
-
-      {/* Content */}
-      <div className="container-custom -mt-32 relative z-10 pb-12">
+      <div className="container-custom py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-surface border border-border rounded-2xl p-8 mb-8"
+          className="mb-8"
         >
-          {/* Header */}
-          <div className="flex justify-between items-start mb-6">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold text-text">{VENDOR.name}</h1>
-                {VENDOR.verified && <span className="bg-accent/10 text-accent px-3 py-1 rounded-full text-sm font-bold">✓ Verified</span>}
-              </div>
-              <p className="text-muted text-lg mb-4">{VENDOR.category}</p>
+          <img
+            src={VENDOR.image}
+            alt={VENDOR.name}
+            className="w-full h-64 md:h-96 object-cover rounded-lg"
+          />
+        </motion.div>
 
-              {/* Rating */}
-              <div className="flex items-center gap-4 mb-6">
-                <div className="flex items-center gap-1">
-                  <div className="flex gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-5 h-5 ${
-                          i < Math.floor(VENDOR.rating)
-                            ? 'fill-accent text-accent'
-                            : 'text-border'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="ml-2 font-bold text-text">{VENDOR.rating}</span>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="card mb-8"
+        >
+          <div className="flex flex-col md:flex-row md:items-center gap-6">
+            <div className="flex-1">
+              <div className="flex items-start gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-gradient">{VENDOR.name}</h1>
+                {VENDOR.verified && (
+                  <span className="text-sm bg-green-500/10 text-green-400 px-3 py-1 rounded-full">
+                    ✓ Verified
+                  </span>
+                )}
+              </div>
+              <p className="text-muted mb-4">{VENDOR.bio}</p>
+              <div className="flex flex-wrap gap-4 text-sm">
+                <div className="flex items-center gap-2 text-muted">
+                  <MapPin className="w-4 h-4" />
+                  {VENDOR.location}
                 </div>
-                <p className="text-muted">
-                  <span className="text-text font-semibold">{VENDOR.reviewCount}</span> reviews
-                </p>
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 fill-accent text-accent" />
+                  <span className="text-text font-semibold">{VENDOR.rating}</span>
+                  <span className="text-muted">({VENDOR.reviewCount} reviews)</span>
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Bio */}
-          <p className="text-muted text-lg mb-8 leading-relaxed">{VENDOR.bio}</p>
-
-          {/* Contact Info */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { icon: MapPin, label: 'Location', value: VENDOR.location },
-              { icon: Phone, label: 'Phone', value: VENDOR.phone },
-              { icon: Mail, label: 'Email', value: VENDOR.email },
-            ].map((info, i) => (
-              <div key={i} className="flex gap-3">
-                <info.icon className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
-                <div>
-                  <p className="text-xs text-muted uppercase tracking-wider">{info.label}</p>
-                  <p className="text-text font-medium">{info.value}</p>
-                </div>
-              </div>
-            ))}
-          </div>
         </motion.div>
 
-        {/* Services & Booking */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Services List */}
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-bold text-text mb-6">Services</h2>
             <div className="space-y-3">
@@ -201,7 +205,6 @@ export default function VendorPage({ params }: { params: { id: string } }) {
             </div>
           </div>
 
-          {/* Booking Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -210,14 +213,12 @@ export default function VendorPage({ params }: { params: { id: string } }) {
           >
             <h3 className="text-xl font-bold text-text mb-6">Book Service</h3>
 
-            {/* Selected Service Display */}
             <div className="bg-primary border border-border rounded-lg p-4 mb-6">
               <p className="text-sm text-muted mb-1">Selected</p>
               <h4 className="font-bold text-text mb-1">{selectedService.name}</h4>
               <p className="text-2xl font-bold text-accent">£{selectedService.price}</p>
             </div>
 
-            {/* Date Selection */}
             <div className="mb-4">
               <label className="block text-sm font-medium text-text mb-2">
                 <Calendar className="w-4 h-4 inline mr-2" />
@@ -226,74 +227,89 @@ export default function VendorPage({ params }: { params: { id: string } }) {
               <input
                 type="date"
                 value={bookingDate}
-                onChange={(e) => setBookingDate(e.target.value)}
+                onChange={(e) => {
+                  setBookingDate(e.target.value)
+                  setBookingTime('')
+                }}
+                min={new Date().toISOString().split('T')[0]}
                 className="w-full bg-primary border border-border rounded-lg px-3 py-2 text-text focus-ring"
               />
             </div>
 
-            {/* Time Selection */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-text mb-2">
-                <Clock className="w-4 h-4 inline mr-2" />
-                Preferred Time
-              </label>
-              <select
-                value={bookingTime}
-                onChange={(e) => setBookingTime(e.target.value)}
-                className="w-full bg-primary border border-border rounded-lg px-3 py-2 text-text focus-ring"
-              >
-                <option value="">Select a time</option>
-                <option value="09:00">09:00 AM</option>
-                <option value="11:00">11:00 AM</option>
-                <option value="14:00">2:00 PM</option>
-                <option value="16:00">4:00 PM</option>
-              </select>
-            </div>
+            {bookingDate && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-text mb-2">
+                  <Clock className="w-4 h-4 inline mr-2" />
+                  Available Time Slots
+                </label>
+                {availableTimeSlots.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-2">
+                    {availableTimeSlots.map((time) => (
+                      <button
+                        key={time}
+                        onClick={() => setBookingTime(time)}
+                        className={`px-3 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
+                          bookingTime === time
+                            ? 'border-accent bg-accent/10 text-accent'
+                            : 'border-border text-muted hover:border-accent/50 hover:text-text'
+                        }`}
+                      >
+                        {time}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-muted text-sm bg-primary/50 rounded-lg p-4 text-center">
+                    No available slots for this date. Please select another date.
+                  </p>
+                )}
+              </div>
+            )}
 
-            {/* Success Message */}
+            {!bookingDate && (
+              <div className="mb-6">
+                <p className="text-muted text-sm bg-primary/50 rounded-lg p-4 text-center">
+                  Please select a date to see available time slots
+                </p>
+              </div>
+            )}
+
             {bookingSuccess && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm"
+                className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-4 text-green-400 text-sm text-center"
               >
-                ✓ Booking confirmed! Check your messages.
+                ✓ Booking request sent! We&apos;ll confirm shortly.
               </motion.div>
             )}
 
-            {/* Book Button */}
             <button
               onClick={handleBooking}
               disabled={!bookingDate || !bookingTime}
-              className="w-full btn-primary py-3 rounded-lg font-semibold disabled:opacity-50 transition-all"
+              className="w-full btn-primary py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Continue to Booking
+              Book Now
             </button>
-
-            {/* Message Vendor */}
-            <Link href="/chat" className="w-full mt-3 btn-secondary py-3 rounded-lg font-semibold text-center block">
-              Message Vendor
-            </Link>
           </motion.div>
         </div>
 
-        {/* Reviews Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-16"
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="card mt-8"
         >
           <h2 className="text-2xl font-bold text-text mb-6">Reviews</h2>
-          <div className="space-y-4">
+          <div className="space-y-6">
             {VENDOR.reviews.map((review) => (
-              <div key={review.id} className="card">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <p className="font-bold text-text">{review.author}</p>
-                    <p className="text-xs text-muted">{review.date}</p>
+              <div key={review.id} className="border-b border-border last:border-0 pb-6 last:pb-0">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-semibold text-text">{review.author}</h4>
+                    <span className="text-sm text-muted">{review.date}</span>
                   </div>
-                  <div className="flex gap-0.5">
+                  <div className="flex gap-1">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}

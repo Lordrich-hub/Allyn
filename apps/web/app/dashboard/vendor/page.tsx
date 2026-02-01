@@ -89,6 +89,9 @@ export default function VendorDashboard() {
             <Link href="/dashboard/vendor/services" className="btn-secondary px-6 py-2 rounded-lg text-sm">
               Manage Services
             </Link>
+            <Link href="/dashboard/vendor/availability" className="btn-secondary px-6 py-2 rounded-lg text-sm">
+              Availability
+            </Link>
             <Link href="/dashboard/vendor/edit" className="btn-primary px-6 py-2 rounded-lg text-sm">
               Edit Profile
             </Link>
