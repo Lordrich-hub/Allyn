@@ -12,10 +12,10 @@ export default function HomePage() {
         <div className="container-custom py-4 flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gradient">AfroLuxe</h1>
           <nav className="flex gap-4">
-            <Link href="/auth/signin" className="btn-secondary text-sm">
+            <Link href="/signin" className="btn-secondary text-sm">
               Sign In
             </Link>
-            <Link href="/auth/signup" className="btn-primary text-sm">
+            <Link href="/signup" className="btn-primary text-sm">
               Sign Up
             </Link>
           </nav>
@@ -54,10 +54,10 @@ export default function HomePage() {
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
-              href="/auth/signup"
+              href="/dashboard/vendor/services"
               className="btn-secondary inline-flex items-center justify-center"
             >
-              List Your Service
+              List Your Services
             </Link>
           </div>
         </motion.div>

@@ -73,6 +73,7 @@ export default function SearchPage() {
   const [radiusMiles, setRadiusMiles] = useState(25)
   const [showFilters, setShowFilters] = useState(false)
   const [useMyLocation, setUseMyLocation] = useState(false)
+  const [viewMode, setViewMode] = useState<'grid' | 'categories'>('categories')
 
   const filteredVendors = useMemo(() => {
     return MOCK_VENDORS.filter((vendor) => {
@@ -86,6 +87,18 @@ export default function SearchPage() {
       return matchesSearch && matchesCategory && matchesLocation && matchesRating
     })
   }, [searchQuery, selectedCategory, selectedLocation, minRating])
+
+  // Group vendors by category
+  const vendorsByCategory = useMemo(() => {
+    const grouped: Record<string, typeof MOCK_VENDORS> = {}
+    filteredVendors.forEach((vendor) => {
+      if (!grouped[vendor.category]) {
+        grouped[vendor.category] = []
+      }
+      grouped[vendor.category].push(vendor)
+    })
+    return grouped
+  }, [filteredVendors])
 
   const handleUseMyLocation = () => {
     if ('geolocation' in navigator) {
@@ -235,12 +248,34 @@ export default function SearchPage() {
 
       {/* Results Section */}
       <div className="container-custom py-8">
-        <div className="mb-6">
+        <div className="mb-6 flex justify-between items-center">
           <p className="text-muted">
             Found <span className="text-accent font-semibold">{filteredVendors.length}</span> vendors
             {selectedCategory && ` in ${selectedCategory}`}
             {selectedLocation && ` near ${selectedLocation}`}
           </p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode('categories')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                viewMode === 'categories'
+                  ? 'bg-accent text-primary'
+                  : 'bg-primary text-muted hover:text-text'
+              }`}
+            >
+              By Category
+            </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                viewMode === 'grid'
+                  ? 'bg-accent text-primary'
+                  : 'bg-primary text-muted hover:text-text'
+              }`}
+            >
+              Grid View
+            </button>
+          </div>
         </div>
 
         {filteredVendors.length === 0 ? (
@@ -253,7 +288,75 @@ export default function SearchPage() {
             <h3 className="text-xl font-bold text-text mb-2">No vendors found</h3>
             <p className="text-muted">Try adjusting your filters or search terms</p>
           </motion.div>
+        ) : viewMode === 'categories' ? (
+          // Category View
+          <div className="space-y-12">
+            {Object.entries(vendorsByCategory).map(([category, vendors]) => (
+              <div key={category}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-gradient">{category}</h2>
+                  <span className="text-sm text-muted bg-primary px-3 py-1 rounded-full">
+                    {vendors.length} {vendors.length === 1 ? 'vendor' : 'vendors'}
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {vendors.map((vendor, index) => (
+                    <motion.div
+                      key={vendor.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="card overflow-hidden hover:shadow-lg hover:shadow-accent/20 group cursor-pointer"
+                      onClick={() => (window.location.href = `/vendor/${vendor.id}`)}
+                    >
+                      <div className="relative h-48 mb-4 overflow-hidden rounded-lg">
+                        <img
+                          src={vendor.image}
+                          alt={vendor.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        {vendor.verified && (
+                          <div className="absolute top-3 right-3 bg-accent/90 text-primary px-3 py-1 rounded-full text-xs font-bold">
+                            ✓ Verified
+                          </div>
+                        )}
+                      </div>
+                      <div className="space-y-3">
+                        <div>
+                          <h3 className="font-bold text-text group-hover:text-accent transition-colors">
+                            {vendor.name}
+                          </h3>
+                          <p className="text-sm text-muted">{vendor.category}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1">
+                            <Star className="w-4 h-4 fill-accent text-accent" />
+                            <span className="font-semibold text-text">{vendor.rating}</span>
+                          </div>
+                          <span className="text-xs text-muted">({vendor.reviewCount} reviews)</span>
+                        </div>
+                        <div className="space-y-1 text-sm">
+                          <div className="flex items-center gap-2 text-muted">
+                            <MapPin className="w-4 h-4" />
+                            {vendor.location}
+                          </div>
+                          <p className="text-accent font-semibold">{vendor.price}</p>
+                        </div>
+                        <Link
+                          href={`/vendor/${vendor.id}`}
+                          className="block w-full mt-4 btn-primary text-center py-2 rounded-lg text-sm"
+                        >
+                          View Profile
+                        </Link>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         ) : (
+          // Grid View
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVendors.map((vendor, index) => (
               <motion.div
