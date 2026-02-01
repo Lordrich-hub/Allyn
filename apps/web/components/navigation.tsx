@@ -9,9 +9,7 @@ export function Navigation() {
   const pathname = usePathname()
   const [isSignedIn, setIsSignedIn] = useState(false)
   
-  // Check if user is signed in (mock - replace with real auth)
   useEffect(() => {
-    // Check if we're on dashboard/vendor pages as proxy for signed in
     const signedIn = pathname?.startsWith('/dashboard') || pathname?.startsWith('/chat')
     setIsSignedIn(signedIn)
   }, [pathname])
@@ -20,6 +18,10 @@ export function Navigation() {
   if (pathname?.startsWith('/signin') || pathname?.startsWith('/signup')) {
     return null
   }
+  
+  // Only show auth buttons on home page or search page
+  const isHomePage = pathname === '/'
+  const isSearchPage = pathname === '/search'
 
   return (
     <nav className="sticky top-0 z-50 bg-surface border-b border-border">
@@ -38,7 +40,7 @@ export function Navigation() {
                   JD
                 </div>
               </Link>
-            ) : (
+            ) : (isHomePage || isSearchPage) ? (
               <>
                 <Link href="/signin" className="btn-secondary text-sm">
                   Sign In
@@ -47,7 +49,7 @@ export function Navigation() {
                   Sign Up
                 </Link>
               </>
-            )}
+            ) : null}
           </div>
 
           {/* Mobile Navigation */}
@@ -58,7 +60,7 @@ export function Navigation() {
                   JD
                 </div>
               </Link>
-            ) : (
+            ) : (isHomePage || isSearchPage) ? (
               <>
                 <Link href="/signin" className="btn-secondary text-sm px-3 py-2">
                   Sign In
@@ -67,7 +69,7 @@ export function Navigation() {
                   Sign Up
                 </Link>
               </>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

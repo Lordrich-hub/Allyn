@@ -5,76 +5,141 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Star, MapPin, Phone, Mail, Calendar, DollarSign, ChevronLeft, Heart, Share2, Clock } from 'lucide-react'
 
-// Mock vendor data with availability
-const VENDOR = {
-  id: '1',
-  name: 'Divine Hair Studio',
-  category: 'Hair & Beauty',
-  location: 'London, E1 2QQ',
-  phone: '+44 20 1234 5678',
-  email: 'hello@divinehair.co.uk',
-  image: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=800&h=400&fit=crop',
-  rating: 4.9,
-  reviewCount: 124,
-  verified: true,
-  bio: 'Professional hair braiding, weaving, and natural hair care specialists. Over 10 years of experience serving the London community.',
-  hours: {
-    monday: '10:00 - 18:00',
-    tuesday: '10:00 - 18:00',
-    wednesday: '10:00 - 20:00',
-    thursday: '10:00 - 20:00',
-    friday: '10:00 - 20:00',
-    saturday: '09:00 - 19:00',
-    sunday: 'Closed',
+// Mock vendor data - all vendors
+const ALL_VENDORS = [
+  {
+    id: '1',
+    name: 'Divine Hair Studio',
+    category: 'Hair & Beauty',
+    location: 'London, E1 2QQ',
+    phone: '+44 20 1234 5678',
+    email: 'hello@divinehair.co.uk',
+    image: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?w=800&h=400&fit=crop',
+    rating: 4.9,
+    reviewCount: 124,
+    verified: true,
+    bio: 'Professional hair braiding, weaving, and natural hair care specialists. Over 10 years of experience serving the London community.',
+    services: [
+      { id: '1', name: 'Box Braids', description: 'Professional box braids with various styles', price: 80, duration: '4-6 hours' },
+      { id: '2', name: 'Cornrows', description: 'Traditional cornrow styling', price: 45, duration: '2-3 hours' },
+      { id: '3', name: 'Weave Installation', description: 'High-quality weave installation', price: 150, duration: '5-7 hours' },
+      { id: '4', name: 'Natural Hair Treatment', description: 'Deep conditioning and care', price: 60, duration: '2 hours' },
+    ],
+    reviews: [
+      { id: '1', author: 'Ama K.', rating: 5, date: '2 weeks ago', text: 'Excellent service! The braids are beautiful and they took great care of my hair.' },
+      { id: '2', author: 'Zainab M.', rating: 5, date: '1 month ago', text: 'Professional and welcoming environment. Highly recommend!' },
+      { id: '3', author: 'Patience O.', rating: 4, date: '1 month ago', text: 'Great work. Could be a bit faster but overall very satisfied.' },
+    ],
+    availability: {
+      monday: ['09:00', '11:00', '14:00', '16:00'],
+      tuesday: ['09:00', '11:00', '14:00', '16:00'],
+      wednesday: ['09:00', '11:00', '14:00', '16:00', '18:00'],
+      thursday: ['09:00', '11:00', '14:00', '16:00', '18:00'],
+      friday: ['09:00', '11:00', '14:00', '16:00', '18:00'],
+      saturday: ['09:00', '11:00', '13:00', '15:00', '17:00'],
+      sunday: [],
+    },
+    bookedSlots: [
+      { date: '2026-02-05', time: '11:00' },
+      { date: '2026-02-05', time: '14:00' },
+      { date: '2026-02-06', time: '09:00' },
+    ],
   },
-  // Vendor's available time slots per day
-  availability: {
-    monday: ['09:00', '11:00', '14:00', '16:00'],
-    tuesday: ['09:00', '11:00', '14:00', '16:00'],
-    wednesday: ['09:00', '11:00', '14:00', '16:00', '18:00'],
-    thursday: ['09:00', '11:00', '14:00', '16:00', '18:00'],
-    friday: ['09:00', '11:00', '14:00', '16:00', '18:00'],
-    saturday: ['09:00', '11:00', '13:00', '15:00', '17:00'],
-    sunday: [],
+  {
+    id: '2',
+    name: 'Royal Braids Salon',
+    category: 'Hair & Beauty',
+    location: 'London, SE1 7PB',
+    phone: '+44 20 7946 0958',
+    email: 'hello@royalbraids.co.uk',
+    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=400&fit=crop',
+    rating: 4.8,
+    reviewCount: 156,
+    verified: true,
+    bio: 'Expert braiding salon specializing in traditional and modern styles.',
+    services: [
+      { id: '1', name: 'Micro Braids', description: 'Detailed micro braiding', price: 95, duration: '5-7 hours' },
+      { id: '2', name: 'Twists', description: 'Beautiful two-strand twists', price: 70, duration: '3-4 hours' },
+    ],
+    reviews: [
+      { id: '1', author: 'Ama T.', rating: 5, date: '1 week ago', text: 'Top quality work!' },
+    ],
+    availability: {
+      monday: ['10:00', '12:00', '14:00', '16:00', '18:00'],
+      tuesday: ['10:00', '12:00', '14:00', '16:00', '18:00'],
+      wednesday: ['10:00', '12:00', '14:00', '16:00', '18:00'],
+      thursday: ['10:00', '12:00', '14:00', '16:00', '18:00'],
+      friday: ['10:00', '12:00', '14:00', '16:00', '18:00'],
+      saturday: ['09:00', '11:00', '13:00', '15:00', '17:00', '19:00'],
+      sunday: ['12:00', '14:00', '16:00'],
+    },
+    bookedSlots: [],
   },
-  // Existing bookings to prevent double-booking
-  bookedSlots: [
-    { date: '2026-02-05', time: '11:00' },
-    { date: '2026-02-05', time: '14:00' },
-    { date: '2026-02-06', time: '09:00' },
-  ],
-  services: [
-    { id: '1', name: 'Box Braids', description: 'Professional box braids with various styles', price: 80, duration: '4-6 hours' },
-    { id: '2', name: 'Cornrows', description: 'Traditional cornrow styling', price: 45, duration: '2-3 hours' },
-    { id: '3', name: 'Weave Installation', description: 'High-quality weave installation', price: 150, duration: '5-7 hours' },
-    { id: '4', name: 'Natural Hair Treatment', description: 'Deep conditioning and care', price: 60, duration: '2 hours' },
-  ],
-  reviews: [
-    {
-      id: '1',
-      author: 'Ama K.',
-      rating: 5,
-      date: '2 weeks ago',
-      text: 'Excellent service! The braids are beautiful and they took great care of my hair.',
+  {
+    id: '3',
+    name: 'Afro Chic Barbers',
+    category: 'Hair & Beauty',
+    location: 'Birmingham, B2 4BF',
+    phone: '+44 121 632 1234',
+    email: 'info@afrochic.co.uk',
+    image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&h=400&fit=crop',
+    rating: 4.7,
+    reviewCount: 203,
+    verified: true,
+    bio: 'Premium barbershop for men seeking authentic African grooming.',
+    services: [
+      { id: '1', name: 'Fade Cut', description: 'Sharp fade haircut', price: 25, duration: '30 mins' },
+      { id: '2', name: 'Line-up', description: 'Perfect line-up service', price: 15, duration: '15 mins' },
+    ],
+    reviews: [
+      { id: '1', author: 'Kofi A.', rating: 5, date: '3 days ago', text: 'Best barber in town!' },
+    ],
+    availability: {
+      monday: ['10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'],
+      tuesday: ['10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'],
+      wednesday: ['10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'],
+      thursday: ['10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'],
+      friday: ['10:00', '11:00', '12:00', '14:00', '15:00', '16:00', '17:00'],
+      saturday: ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'],
+      sunday: ['11:00', '12:00', '13:00', '14:00', '15:00'],
     },
-    {
-      id: '2',
-      author: 'Zainab M.',
-      rating: 5,
-      date: '1 month ago',
-      text: 'Professional and welcoming environment. Highly recommend!',
+    bookedSlots: [],
+  },
+  {
+    id: '4',
+    name: 'Natural Hair Heaven',
+    category: 'Hair & Beauty',
+    location: 'Manchester, M4 1AE',
+    phone: '+44 161 833 9999',
+    email: 'care@naturalhair.co.uk',
+    image: 'https://images.unsplash.com/photo-1596449379191-20dc8d9dfd00?w=800&h=400&fit=crop',
+    rating: 4.9,
+    reviewCount: 89,
+    verified: true,
+    bio: 'Specialists in natural hair care and protective styling.',
+    services: [
+      { id: '1', name: 'Protective Styling', description: 'Protective braids and twists', price: 85, duration: '4-5 hours' },
+    ],
+    reviews: [],
+    availability: {
+      monday: ['10:00', '12:00', '14:00', '16:00'],
+      tuesday: ['10:00', '12:00', '14:00', '16:00'],
+      wednesday: [],
+      thursday: ['10:00', '12:00', '14:00', '16:00'],
+      friday: ['10:00', '12:00', '14:00', '16:00'],
+      saturday: ['09:00', '11:00', '13:00', '15:00', '17:00'],
+      sunday: [],
     },
-    {
-      id: '3',
-      author: 'Patience O.',
-      rating: 4,
-      date: '1 month ago',
-      text: 'Great work. Could be a bit faster but overall very satisfied.',
-    },
-  ],
+    bookedSlots: [],
+  },
+];
+
+function getVendorById(id: string) {
+  return ALL_VENDORS.find(v => v.id === id) || ALL_VENDORS[0];
 }
 
 export default function VendorPage({ params }: { params: { id: string } }) {
+  const VENDOR = getVendorById(params.id)
   const [selectedService, setSelectedService] = useState(VENDOR.services[0])
   const [bookingDate, setBookingDate] = useState('')
   const [bookingTime, setBookingTime] = useState('')

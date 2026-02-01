@@ -364,19 +364,21 @@ export default function SearchPage() {
   const [showFilters, setShowFilters] = useState(false)
   const [useMyLocation, setUseMyLocation] = useState(false)
   const [viewMode, setViewMode] = useState<'grid' | 'categories'>('categories')
+  const [appliedFilters, setAppliedFilters] = useState({ category: null as string | null, location: '', rating: 0, radius: 25 })
+  const [tempFilters, setTempFilters] = useState({ category: null as string | null, location: '', rating: 0, radius: 25 })
 
   const filteredVendors = useMemo(() => {
     return MOCK_VENDORS.filter((vendor) => {
       const matchesSearch =
         vendor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         vendor.category.toLowerCase().includes(searchQuery.toLowerCase())
-      const matchesCategory = !selectedCategory || vendor.category === selectedCategory
-      const matchesLocation = !selectedLocation || vendor.location.toLowerCase().includes(selectedLocation.toLowerCase())
-      const matchesRating = vendor.rating >= minRating
+      const matchesCategory = !appliedFilters.category || vendor.category === appliedFilters.category
+      const matchesLocation = !appliedFilters.location || vendor.location.toLowerCase().includes(appliedFilters.location.toLowerCase())
+      const matchesRating = vendor.rating >= appliedFilters.rating
 
       return matchesSearch && matchesCategory && matchesLocation && matchesRating
     })
-  }, [searchQuery, selectedCategory, selectedLocation, minRating])
+  }, [searchQuery, appliedFilters])
 
   // Group vendors by category
   const vendorsByCategory = useMemo(() => {
@@ -444,8 +446,8 @@ export default function SearchPage() {
               <div>
                 <label className="text-sm font-medium text-text block mb-2">Category</label>
                 <select
-                  value={selectedCategory || ''}
-                  onChange={(e) => setSelectedCategory(e.target.value || null)}
+                  value={tempFilters.category || ''}
+                  onChange={(e) => setTempFilters({...tempFilters, category: e.target.value || null})}
                   className="w-full bg-primary border border-border rounded-lg px-4 py-2 text-text focus-ring"
                 >
                   <option value="">All Categories</option>
@@ -466,8 +468,8 @@ export default function SearchPage() {
                     <input
                       type="text"
                       placeholder="City or postcode"
-                      value={selectedLocation}
-                      onChange={(e) => setSelectedLocation(e.target.value)}
+                      value={tempFilters.location}
+                      onChange={(e) => setTempFilters({...tempFilters, location: e.target.value})}
                       className="w-full bg-primary border border-border rounded-lg pl-12 pr-4 py-2 text-text placeholder:text-muted/50 focus-ring"
                     />
                   </div>
@@ -483,15 +485,15 @@ export default function SearchPage() {
               {/* Radius Filter */}
               <div>
                 <label className="text-sm font-medium text-text block mb-2">
-                  Search Radius: {radiusMiles} miles
+                  Search Radius: {tempFilters.radius} miles
                 </label>
                 <input
                   type="range"
                   min="1"
                   max="50"
                   step="1"
-                  value={radiusMiles}
-                  onChange={(e) => setRadiusMiles(parseInt(e.target.value))}
+                  value={tempFilters.radius}
+                  onChange={(e) => setTempFilters({...tempFilters, radius: parseInt(e.target.value)})}
                   className="w-full accent-accent"
                 />
                 <div className="flex justify-between text-xs text-muted mt-1">
@@ -503,34 +505,43 @@ export default function SearchPage() {
               {/* Rating Filter */}
               <div>
                 <label className="text-sm font-medium text-text block mb-2">
-                  Minimum Rating: {minRating.toFixed(1)}★
+                  Minimum Rating: {tempFilters.rating.toFixed(1)}★
                 </label>
                 <input
                   type="range"
                   min="0"
                   max="5"
                   step="0.1"
-                  value={minRating}
-                  onChange={(e) => setMinRating(parseFloat(e.target.value))}
+                  value={tempFilters.rating}
+                  onChange={(e) => setTempFilters({...tempFilters, rating: parseFloat(e.target.value)})}
                   className="w-full accent-accent"
                 />
               </div>
 
-              {/* Clear Filters */}
-              {(selectedCategory || selectedLocation || minRating > 0 || radiusMiles !== 25) && (
+              {/* Apply & Clear Buttons */}
+              <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => {
-                    setSelectedCategory(null)
-                    setSelectedLocation('')
-                    setMinRating(0)
-                    setRadiusMiles(25)
-                    setUseMyLocation(false)
+                    setAppliedFilters(tempFilters)
+                    setShowFilters(false)
                   }}
-                  className="w-full text-accent hover:underline text-sm font-medium"
+                  className="flex-1 btn-primary py-2 rounded-lg font-semibold text-sm"
                 >
-                  Clear all filters
+                  Apply Filters
                 </button>
-              )}
+                {(tempFilters.category || tempFilters.location || tempFilters.rating > 0 || tempFilters.radius !== 25) && (
+                  <button
+                    onClick={() => {
+                      setTempFilters({ category: null, location: '', rating: 0, radius: 25 })
+                      setAppliedFilters({ category: null, location: '', rating: 0, radius: 25 })
+                      setUseMyLocation(false)
+                    }}
+                    className="flex-1 btn-secondary py-2 rounded-lg font-semibold text-sm"
+                  >
+                    Clear All
+                  </button>
+                )}
+              </div>
             </motion.div>
           )}
         </div>
