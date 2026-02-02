@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Heart, Users, Zap, Globe } from 'lucide-react'
 
+// About Allyn - Company information page
 export default function AboutPage() {
   const values = [
     {
