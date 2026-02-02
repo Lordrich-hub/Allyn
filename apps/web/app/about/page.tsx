@@ -30,9 +30,9 @@ export default function AboutPage() {
   ]
 
   const milestones = [
-    { year: '2024', title: 'Founded', description: 'Allyn launched to connect African entrepreneurs with customers across the UK.' },
-    { year: '2025', title: 'Growth', description: 'Expanded to 1000+ verified vendors and 15,000+ happy customers.' },
-    { year: '2026', title: 'Expansion', description: 'Scaling operations and expanding service categories.' },
+    { year: '2026', title: 'Launch Year', description: 'Allyn officially launched in the UK to connect African entrepreneurs with customers.' },
+    { year: '2026', title: 'Early Momentum', description: 'Onboarded our first wave of verified vendors and initial customer bookings.' },
+    { year: '2026', title: 'Growing Impact', description: 'Expanding service categories and strengthening community partnerships.' },
   ]
 
   return (

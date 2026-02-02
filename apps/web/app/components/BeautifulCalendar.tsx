@@ -9,6 +9,8 @@ interface BeautifulCalendarProps {
 
 export function BeautifulCalendar({ onDateSelect, selectedDate, availableDates = [] }: BeautifulCalendarProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date())
+  const today = new Date()
+  const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate())
 
   const getDaysInMonth = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
@@ -37,7 +39,14 @@ export function BeautifulCalendar({ onDateSelect, selectedDate, availableDates =
   }
 
   const prevMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))
+    const prev = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
+    const isBeforeCurrentMonth =
+      prev.getFullYear() < startOfToday.getFullYear() ||
+      (prev.getFullYear() === startOfToday.getFullYear() && prev.getMonth() < startOfToday.getMonth())
+
+    if (!isBeforeCurrentMonth) {
+      setCurrentMonth(prev)
+    }
   }
 
   const nextMonth = () => {
@@ -46,6 +55,7 @@ export function BeautifulCalendar({ onDateSelect, selectedDate, availableDates =
 
   const handleDayClick = (day: number) => {
     const selected = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
+    if (selected < startOfToday) return
     const dateStr = selected.toISOString().split('T')[0]
     onDateSelect(dateStr)
   }
@@ -58,12 +68,16 @@ export function BeautifulCalendar({ onDateSelect, selectedDate, availableDates =
   }
 
   const isToday = (day: number) => {
-    const today = new Date()
     return (
       day === today.getDate() &&
       currentMonth.getMonth() === today.getMonth() &&
       currentMonth.getFullYear() === today.getFullYear()
     )
+  }
+
+  const isPastDate = (day: number) => {
+    const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
+    return date < startOfToday
   }
 
   return (
@@ -101,10 +115,11 @@ export function BeautifulCalendar({ onDateSelect, selectedDate, availableDates =
             <button
               key={`${weekIdx}-${dayIdx}`}
               onClick={() => day && handleDayClick(day)}
-              disabled={!day}
+              disabled={!day || (day !== null && isPastDate(day))}
               className={`
                 aspect-square rounded-lg font-semibold text-sm transition-all relative overflow-hidden
                 ${!day ? 'text-transparent' : ''}
+                ${day && isPastDate(day) ? 'bg-primary/10 text-muted/40 cursor-not-allowed' : ''}
                 ${isDateSelected(day!) ? 'bg-accent text-primary shadow-lg shadow-accent/50' : ''}
                 ${!isDateSelected(day!) && day ? 'bg-primary/30 text-text hover:bg-accent/40 hover:text-accent' : ''}
                 ${isToday(day!) && !isDateSelected(day!) ? 'ring-2 ring-accent/50' : ''}

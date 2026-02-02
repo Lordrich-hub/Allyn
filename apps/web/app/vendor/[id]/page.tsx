@@ -993,7 +993,6 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
   const [bookingDate, setBookingDate] = useState('')
   const [bookingTime, setBookingTime] = useState('')
   const [isFavorited, setIsFavorited] = useState(false)
-  const [bookingSuccess, setBookingSuccess] = useState(false)
   const [showPaymentModal, setShowPaymentModal] = useState(false)
 
   // Get available time slots for selected date
@@ -1003,9 +1002,17 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
     const date = new Date(bookingDate)
     const dayName = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()
     const daySlots = VENDOR.availability[dayName as keyof typeof VENDOR.availability] || []
+    const today = new Date()
+    const isToday = bookingDate === today.toISOString().split('T')[0]
     
     // Filter out already booked slots
     return daySlots.filter(time => {
+      if (isToday) {
+        const [hours, minutes] = time.split(':').map(Number)
+        const slotTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hours, minutes)
+        if (slotTime <= today) return false
+      }
+
       const isBooked = VENDOR.bookedSlots.some(
         slot => slot.date === bookingDate && slot.time === time
       )
@@ -1013,13 +1020,9 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
     })
   }, [bookingDate])
 
-  const handlePaymentConfirm = (method: string, depositAmount: number) => {
-    setBookingSuccess(true)
-    setTimeout(() => {
-      setBookingSuccess(false)
-      setBookingDate('')
-      setBookingTime('')
-    }, 3000)
+  const handleDateSelect = (date: string) => {
+    setBookingDate(date)
+    setBookingTime('')
   }
 
   return (
@@ -1137,7 +1140,7 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
               <div className="mb-6">
                 <p className="text-sm font-semibold text-text mb-3">Select Date</p>
                 <BeautifulCalendar
-                  onDateSelect={setBookingDate}
+                  onDateSelect={handleDateSelect}
                   selectedDate={bookingDate}
                 />
               </div>
@@ -1181,16 +1184,6 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
                 </div>
               )}
 
-              {bookingSuccess && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-4 text-green-400 text-sm text-center"
-                >
-                  ✓ Booking confirmed! Payment deposit reserved.
-                </motion.div>
-              )}
-
               <motion.button
                 onClick={() => bookingDate && bookingTime && setShowPaymentModal(true)}
                 disabled={!bookingDate || !bookingTime}
@@ -1211,11 +1204,14 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
               onClose={() => setShowPaymentModal(false)}
               paymentData={{
                 vendorName: VENDOR.name,
+                vendorId: VENDOR.id,
+                serviceName: selectedService.name,
                 totalAmount: selectedService.price,
                 depositPercentage: 30,
                 platformFee: Math.round(selectedService.price * 0.1 * 100) / 100,
+                bookingDate,
+                bookingTime,
               }}
-              onConfirm={handlePaymentConfirm}
             />
           </motion.div>
         </div>

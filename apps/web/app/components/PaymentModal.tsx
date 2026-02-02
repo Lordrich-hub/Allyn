@@ -6,34 +6,58 @@ import { motion } from 'framer-motion'
 
 interface PaymentData {
   vendorName: string
+  vendorId: string
+  serviceName: string
   totalAmount: number
   depositPercentage: number
   platformFee: number
+  bookingDate: string
+  bookingTime: string
 }
 
 interface PaymentModalProps {
   isOpen: boolean
   onClose: () => void
   paymentData: PaymentData
-  onConfirm: (method: string, amount: number) => void
 }
 
-export function PaymentModal({ isOpen, onClose, paymentData, onConfirm }: PaymentModalProps) {
+export function PaymentModal({ isOpen, onClose, paymentData }: PaymentModalProps) {
   const [paymentMethod, setPaymentMethod] = useState<'card' | 'apple' | 'google' | 'bank' | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvc: '' })
+  const [errorMessage, setErrorMessage] = useState('')
 
   const depositAmount = Math.round(paymentData.totalAmount * (paymentData.depositPercentage / 100) * 100) / 100
   const platformFeeAmount = Math.round(paymentData.totalAmount * 0.1 * 100) / 100
 
   const handlePaymentSubmit = async (method: string) => {
     setIsProcessing(true)
-    // Simulate payment processing
-    setTimeout(() => {
-      onConfirm(method, depositAmount)
+    setErrorMessage('')
+
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...paymentData,
+          paymentMethod: method,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Payment session failed to start.')
+      }
+
+      const data = await response.json()
+      if (data?.url) {
+        window.location.href = data.url
+        return
+      }
+
+      throw new Error('Invalid payment response.')
+    } catch (error) {
+      setErrorMessage('Unable to start payment. Please try again.')
       setIsProcessing(false)
-      onClose()
-    }, 2000)
+    }
   }
 
   if (!isOpen) return null
@@ -55,7 +79,7 @@ export function PaymentModal({ isOpen, onClose, paymentData, onConfirm }: Paymen
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gradient mb-2">Secure Payment</h2>
           <p className="text-muted text-sm">
-            Book your appointment with a deposit and complete payment after service
+            You&apos;ll be redirected to a secure checkout to complete your deposit.
           </p>
         </div>
 
@@ -82,7 +106,7 @@ export function PaymentModal({ isOpen, onClose, paymentData, onConfirm }: Paymen
           <div className="bg-accent/10 border border-accent/30 rounded-lg p-3 flex gap-2">
             <AlertCircle className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
             <p className="text-xs text-accent">
-              Your deposit will be held in escrow until the service is completed.
+              Your deposit is held in escrow. Final payment is collected after service completion.
             </p>
           </div>
         </div>
@@ -164,42 +188,10 @@ export function PaymentModal({ isOpen, onClose, paymentData, onConfirm }: Paymen
           </button>
         </div>
 
-        {/* Card Details Form */}
-        {paymentMethod === 'card' && (
-          <motion.div className="space-y-4 mb-6 p-4 bg-primary/10 rounded-xl" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-            <div>
-              <label className="block text-sm text-muted mb-2">Card Number</label>
-              <input
-                type="text"
-                placeholder="1234 5678 9012 3456"
-                value={cardDetails.number}
-                onChange={(e) => setCardDetails({ ...cardDetails, number: e.target.value })}
-                className="w-full bg-background border border-primary/30 rounded-lg px-3 py-2 text-text text-sm focus:outline-none focus:border-accent"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm text-muted mb-2">Expiry</label>
-                <input
-                  type="text"
-                  placeholder="MM/YY"
-                  value={cardDetails.expiry}
-                  onChange={(e) => setCardDetails({ ...cardDetails, expiry: e.target.value })}
-                  className="w-full bg-background border border-primary/30 rounded-lg px-3 py-2 text-text text-sm focus:outline-none focus:border-accent"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-muted mb-2">CVC</label>
-                <input
-                  type="text"
-                  placeholder="123"
-                  value={cardDetails.cvc}
-                  onChange={(e) => setCardDetails({ ...cardDetails, cvc: e.target.value })}
-                  className="w-full bg-background border border-primary/30 rounded-lg px-3 py-2 text-text text-sm focus:outline-none focus:border-accent"
-                />
-              </div>
-            </div>
-          </motion.div>
+        {errorMessage && (
+          <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+            {errorMessage}
+          </div>
         )}
 
         {/* Security Badge */}
@@ -221,7 +213,7 @@ export function PaymentModal({ isOpen, onClose, paymentData, onConfirm }: Paymen
             disabled={!paymentMethod || isProcessing}
             className="flex-1 px-4 py-3 rounded-lg bg-gradient-to-r from-accent to-accent/80 text-primary font-semibold hover:shadow-lg hover:shadow-accent/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
-            {isProcessing ? 'Processing...' : `Pay £${depositAmount.toFixed(2)}`}
+            {isProcessing ? 'Redirecting...' : `Pay £${depositAmount.toFixed(2)}`}
           </button>
         </div>
       </motion.div>
