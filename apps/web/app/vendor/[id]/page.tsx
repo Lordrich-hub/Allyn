@@ -170,13 +170,6 @@ function getVendorById(id: string) {
   return vendor;
 }
 
-// Generate static params for all vendor IDs (1-30)
-export async function generateStaticParams() {
-  return Array.from({ length: 30 }, (_, i) => ({
-    id: String(i + 1),
-  }));
-}
-
 export default function VendorPage({ params }: { params: Promise<{ id: string }> | { id: string } }) {
   const routeParams = useParams()
   const vendorId = routeParams?.id as string || '1'
