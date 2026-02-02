@@ -4,6 +4,9 @@ const nextConfig = {
   images: {
     domains: ['images.unsplash.com', 'placeholder.com', 'localhost'],
   },
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
 }
 
 module.exports = nextConfig
