@@ -1,15 +1,12 @@
 {
-  "version": 2,
-  "builds": [
+  "buildCommand": "cd apps/web && npm run build",
+  "outputDirectory": "apps/web/.next",
+  "installCommand": "cd apps/web && npm install",
+  "framework": "nextjs",
+  "rewrites": [
     {
-      "src": "apps/web/package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "apps/web/$1"
+      "source": "/vendor/:id",
+      "destination": "/vendor/:id"
     }
   ]
 }
