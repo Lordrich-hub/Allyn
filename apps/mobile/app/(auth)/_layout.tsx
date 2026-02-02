@@ -6,7 +6,7 @@ export default function AuthLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        cardStyle: { backgroundColor: '#0B1220' },
+        contentStyle: { backgroundColor: '#0B1220' },
       }}
     >
       <Stack.Screen name="signin" />

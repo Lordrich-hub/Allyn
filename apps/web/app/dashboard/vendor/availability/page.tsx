@@ -108,6 +108,7 @@ export default function AvailabilityPage() {
                     type="checkbox"
                     checked={daySchedule.enabled}
                     onChange={() => toggleDay(dayIndex)}
+                    aria-label={`Enable ${daySchedule.day}`}
                     className="w-5 h-5 accent-accent rounded border-border focus-ring"
                   />
                   <h3 className="text-lg font-semibold text-text">{daySchedule.day}</h3>
@@ -138,6 +139,7 @@ export default function AvailabilityPage() {
                         onChange={(e) =>
                           updateTimeSlot(dayIndex, slot.id, 'startTime', e.target.value)
                         }
+                        aria-label={`${daySchedule.day} start time`}
                         className="bg-background border border-border rounded px-3 py-1.5 text-text focus-ring"
                       />
                       <span className="text-muted">to</span>
@@ -147,12 +149,14 @@ export default function AvailabilityPage() {
                         onChange={(e) =>
                           updateTimeSlot(dayIndex, slot.id, 'endTime', e.target.value)
                         }
+                        aria-label={`${daySchedule.day} end time`}
                         className="bg-background border border-border rounded px-3 py-1.5 text-text focus-ring"
                       />
                       {daySchedule.timeSlots.length > 1 && (
                         <button
                           onClick={() => removeTimeSlot(dayIndex, slot.id)}
                           className="p-2 text-red-400 hover:bg-red-500/10 rounded transition-colors ml-auto"
+                          aria-label={`Remove ${daySchedule.day} time slot`}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

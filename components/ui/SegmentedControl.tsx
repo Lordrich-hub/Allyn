@@ -46,7 +46,6 @@ export function SegmentedControl({ options, value, onChange, className }: Segmen
               isSelected ? 'text-primary' : 'text-muted hover:text-text'
             )}
             role="tab"
-            aria-selected={isSelected}
             aria-label={option.label}
           >
             <span className="flex items-center gap-2">

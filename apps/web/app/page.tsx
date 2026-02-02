@@ -271,14 +271,14 @@ export default function HomePage() {
           className="bg-gradient-to-br from-accent/15 to-accent-secondary/15 border border-accent/30 rounded-3xl p-12 text-center overflow-hidden relative"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-accent/5 via-transparent to-accent-secondary/5" />
-          <div className="relative z-10">
-            <h2 className="text-4xl font-bold text-text mb-4">Ready to Get Started?</h2>
-            <p className="text-muted text-lg mb-8 max-w-2xl mx-auto">
-              Join thousands discovering quality services from the African diaspora. Your next favorite vendor is just a few clicks away.
-            </p>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="inline-flex gap-4"
+          
+          {/* Decorative Elements - Celebration */}
+          <div className="absolute bottom-10 left-10 opacity-20 pointer-events-none hidden lg:block">
+            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="40" fill="#E2B058" />
+              <path d="M50 20L55 40L75 45L55 50L50 70L45 50L25 45L45 40L50 20Z" fill="#C59F47" />
+            </svg>
+          </div>
             >
               <Link href="/search" className="btn-primary px-8 py-4 rounded-lg font-semibold flex items-center gap-2 hover:scale-105 transition-transform">
                 <Search className="w-5 h-5" />

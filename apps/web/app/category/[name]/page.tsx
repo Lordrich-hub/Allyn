@@ -122,12 +122,14 @@ export default function CategoryPage() {
               placeholder="Search vendors..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Search vendors"
               className="w-full bg-primary/20 border border-primary/30 rounded-lg pl-10 pr-4 py-3 text-text placeholder:text-muted focus:outline-none focus:border-accent"
             />
           </div>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
+            aria-label="Sort vendors"
             className="bg-primary/20 border border-primary/30 rounded-lg px-4 py-3 text-text focus:outline-none focus:border-accent"
           >
             <option value="rating">Sort by Rating</option>

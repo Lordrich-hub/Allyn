@@ -162,15 +162,21 @@ export default function ServicesPage() {
                           : 'border-muted text-muted hover:text-text'
                       }`}
                       title={service.active ? 'Deactivate' : 'Activate'}
+                      aria-label={service.active ? 'Deactivate service' : 'Activate service'}
                     >
                       {service.active ? <Check className="w-4 h-4" /> : <X className="w-4 h-4" />}
                     </button>
-                    <Link href={`/dashboard/vendor/services/${service.id}/edit`} className="p-2 rounded-lg border border-muted text-muted hover:text-accent hover:border-accent transition-all">
+                    <Link
+                      href={`/dashboard/vendor/services/${service.id}/edit`}
+                      className="p-2 rounded-lg border border-muted text-muted hover:text-accent hover:border-accent transition-all"
+                      aria-label="Edit service"
+                    >
                       <Edit2 className="w-4 h-4" />
                     </Link>
                     <button
                       onClick={() => deleteService(service.id)}
                       className="p-2 rounded-lg border border-muted text-muted hover:text-red-400 hover:border-red-400 transition-all"
+                      aria-label="Delete service"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

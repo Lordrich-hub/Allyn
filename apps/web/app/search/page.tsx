@@ -456,6 +456,7 @@ function SearchContent() {
                 placeholder="Search services, vendors..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Search services, vendors"
                 className="w-full bg-primary border border-border rounded-lg pl-12 pr-4 py-3 text-text placeholder:text-muted/50 focus-ring"
               />
             </div>
@@ -478,8 +479,14 @@ function SearchContent() {
             >
               {/* Category Filter */}
               <div>
-                <label className="text-sm font-medium text-text block mb-2">Category</label>
+                <label
+                  htmlFor="category-filter"
+                  className="text-sm font-medium text-text block mb-2"
+                >
+                  Category
+                </label>
                 <select
+                  id="category-filter"
                   value={tempFilters.category || ''}
                   onChange={(e) => setTempFilters({...tempFilters, category: e.target.value || null})}
                   className="w-full bg-primary border border-border rounded-lg px-4 py-2 text-text focus-ring"
@@ -495,15 +502,22 @@ function SearchContent() {
 
               {/* Location Filter */}
               <div>
-                <label className="text-sm font-medium text-text block mb-2">Location</label>
+                <label
+                  htmlFor="location-filter"
+                  className="text-sm font-medium text-text block mb-2"
+                >
+                  Location
+                </label>
                 <div className="space-y-2">
                   <div className="relative">
                     <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted pointer-events-none" />
                     <input
+                      id="location-filter"
                       type="text"
                       placeholder="City or postcode"
                       value={tempFilters.location}
                       onChange={(e) => setTempFilters({...tempFilters, location: e.target.value})}
+                      aria-label="Location"
                       className="w-full bg-primary border border-border rounded-lg pl-12 pr-4 py-2 text-text placeholder:text-muted/50 focus-ring"
                     />
                   </div>
@@ -528,6 +542,7 @@ function SearchContent() {
                   step="1"
                   value={tempFilters.radius}
                   onChange={(e) => setTempFilters({...tempFilters, radius: parseInt(e.target.value)})}
+                  aria-label="Search radius"
                   className="w-full accent-accent"
                 />
                 <div className="flex justify-between text-xs text-muted mt-1">
@@ -548,6 +563,7 @@ function SearchContent() {
                   step="0.1"
                   value={tempFilters.rating}
                   onChange={(e) => setTempFilters({...tempFilters, rating: parseFloat(e.target.value)})}
+                  aria-label="Minimum rating"
                   className="w-full accent-accent"
                 />
               </div>

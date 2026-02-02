@@ -1037,10 +1037,14 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
             <button
               onClick={() => setIsFavorited(!isFavorited)}
               className="p-2 rounded-lg border border-border hover:border-accent transition-colors"
+              aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
             >
               <Heart className={`w-5 h-5 ${isFavorited ? 'fill-accent text-accent' : 'text-muted'}`} />
             </button>
-            <button className="p-2 rounded-lg border border-border hover:border-accent transition-colors">
+            <button
+              className="p-2 rounded-lg border border-border hover:border-accent transition-colors"
+              aria-label="Share vendor"
+            >
               <Share2 className="w-5 h-5 text-muted" />
             </button>
           </div>

@@ -23,6 +23,8 @@ export async function POST(request: Request) {
       paymentMethod,
     } = body
 
+    console.log('Checkout request:', { vendorName, vendorId, serviceName, totalAmount, depositPercentage, paymentMethod })
+
     const depositAmount = Math.round(totalAmount * (depositPercentage / 100) * 100) / 100
 
     const origin = request.headers.get('origin') || 'https://allyn.vercel.app'
@@ -71,8 +73,13 @@ export async function POST(request: Request) {
       cancel_url: `${origin}/vendor/${vendorId}?payment=cancelled`,
     })
 
+    console.log('Stripe session created:', session.id)
     return NextResponse.json({ url: session.url })
   } catch (error) {
-    return NextResponse.json({ error: 'Unable to create checkout session.' }, { status: 500 })
+    console.error('Checkout error:', error)
+    return NextResponse.json({ 
+      error: 'Unable to create checkout session.', 
+      details: error instanceof Error ? error.message : 'Unknown error' 
+    }, { status: 500 })
   }
 }

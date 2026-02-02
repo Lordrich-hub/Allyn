@@ -34,6 +34,8 @@ export function PaymentModal({ isOpen, onClose, paymentData }: PaymentModalProps
     setErrorMessage('')
 
     try {
+      console.log('Starting payment with method:', method, 'data:', paymentData)
+      
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -43,19 +45,23 @@ export function PaymentModal({ isOpen, onClose, paymentData }: PaymentModalProps
         }),
       })
 
+      const data = await response.json()
+      console.log('Checkout response:', data)
+
       if (!response.ok) {
-        throw new Error('Payment session failed to start.')
+        throw new Error(data.details || data.error || 'Payment session failed to start.')
       }
 
-      const data = await response.json()
       if (data?.url) {
+        console.log('Redirecting to Stripe:', data.url)
         window.location.href = data.url
         return
       }
 
-      throw new Error('Invalid payment response.')
+      throw new Error('Invalid payment response - no checkout URL received.')
     } catch (error) {
-      setErrorMessage('Unable to start payment. Please try again.')
+      console.error('Payment error:', error)
+      setErrorMessage(error instanceof Error ? error.message : 'Unable to start payment. Please try again.')
       setIsProcessing(false)
     }
   }
@@ -70,7 +76,7 @@ export function PaymentModal({ isOpen, onClose, paymentData }: PaymentModalProps
       onClick={onClose}
     >
       <motion.div
-        className="bg-background border border-accent/30 rounded-2xl p-8 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto"
+        className="bg-background border border-accent/30 rounded-2xl p-8 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto relative"
         initial={{ scale: 0.95, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         onClick={(e) => e.stopPropagation()}

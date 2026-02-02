@@ -52,7 +52,10 @@ export default function AdminDashboard() {
             <Link href="/settings" className="p-2 rounded-lg border border-border text-muted hover:text-accent transition-colors">
               <Settings className="w-5 h-5" />
             </Link>
-            <button className="p-2 rounded-lg border border-border text-muted hover:text-accent transition-colors">
+            <button
+              className="p-2 rounded-lg border border-border text-muted hover:text-accent transition-colors"
+              aria-label="Log out"
+            >
               <LogOut className="w-5 h-5" />
             </button>
           </div>

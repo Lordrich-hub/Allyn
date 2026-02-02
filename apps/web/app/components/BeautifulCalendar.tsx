@@ -87,6 +87,7 @@ export function BeautifulCalendar({ onDateSelect, selectedDate, availableDates =
         <button
           onClick={prevMonth}
           className="p-2 hover:bg-accent/20 rounded-lg transition-colors text-text hover:text-accent"
+          aria-label="Previous month"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -94,6 +95,7 @@ export function BeautifulCalendar({ onDateSelect, selectedDate, availableDates =
         <button
           onClick={nextMonth}
           className="p-2 hover:bg-accent/20 rounded-lg transition-colors text-text hover:text-accent"
+          aria-label="Next month"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
