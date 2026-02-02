@@ -70,7 +70,7 @@ export default function TermsPage() {
             <BookOpen className="w-8 h-8 text-accent" />
             <h1 className="text-4xl md:text-5xl font-bold text-text">Terms of Service</h1>
           </div>
-          <p className="text-muted text-lg">Last updated: {new Date().toLocaleDateString()}</p>
+          <p className="text-muted text-lg">Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
         </motion.div>
 
         <motion.div
