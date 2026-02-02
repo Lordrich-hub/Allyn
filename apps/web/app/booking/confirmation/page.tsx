@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { CheckCircle2, Clock, Calendar, MapPin, AlertTriangle } from 'lucide-react'
+import { CheckCircle2, Clock, Calendar, MapPin, AlertTriangle, Bell, Mail, Phone } from 'lucide-react'
 
 interface SessionData {
   id: string
@@ -24,6 +24,13 @@ export default function BookingConfirmationPage() {
   const [loading, setLoading] = useState(true)
   const [refundStatus, setRefundStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle')
   const [now, setNow] = useState(new Date())
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [channelEmail, setChannelEmail] = useState(true)
+  const [channelSms, setChannelSms] = useState(false)
+  const [reminders, setReminders] = useState<number[]>([24, 3, 1])
+  const [notifyStatus, setNotifyStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle')
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default')
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -43,6 +50,12 @@ export default function BookingConfirmationPage() {
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 60000)
     return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    if (typeof Notification !== 'undefined') {
+      setNotificationPermission(Notification.permission)
+    }
   }, [])
 
   const bookingDateTime = useMemo(() => {
@@ -77,6 +90,62 @@ export default function BookingConfirmationPage() {
       setRefundStatus('success')
     } catch (error) {
       setRefundStatus('error')
+    }
+  }
+
+  const scheduleBrowserReminders = () => {
+    if (!bookingDateTime || notificationPermission !== 'granted') return
+
+    reminders.forEach((hoursBefore) => {
+      const remindAt = new Date(bookingDateTime.getTime() - hoursBefore * 60 * 60 * 1000)
+      const delay = remindAt.getTime() - Date.now()
+      if (delay <= 0) return
+
+      setTimeout(() => {
+        new Notification('Upcoming Allyn booking', {
+          body: `${session?.metadata?.vendorName} in ${hoursBefore}h (${session?.metadata?.bookingTime})`,
+        })
+      }, delay)
+    })
+  }
+
+  const requestNotifications = async () => {
+    if (typeof Notification === 'undefined') return
+    const permission = await Notification.requestPermission()
+    setNotificationPermission(permission)
+    if (permission === 'granted') {
+      scheduleBrowserReminders()
+    }
+  }
+
+  const saveNotifications = async () => {
+    if (!session?.metadata?.vendorName) return
+    setNotifyStatus('saving')
+
+    try {
+      const response = await fetch('/api/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          phone,
+          channelEmail,
+          channelSms,
+          vendorName: session.metadata.vendorName,
+          serviceName: session.metadata.serviceName,
+          bookingDate: session.metadata.bookingDate,
+          bookingTime: session.metadata.bookingTime,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Notification request failed')
+      }
+
+      setNotifyStatus('success')
+      scheduleBrowserReminders()
+    } catch (error) {
+      setNotifyStatus('error')
     }
   }
 
@@ -148,6 +217,104 @@ export default function BookingConfirmationPage() {
                     Your booking starts in {timeRemaining || '—'}. We&apos;ll send reminders as your appointment approaches.
                   </p>
                 </div>
+              </div>
+
+              <div className="bg-primary/20 border border-primary/30 rounded-2xl p-6 mb-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <Bell className="w-5 h-5 text-accent" />
+                  <h3 className="text-lg font-semibold text-text">Get reminders</h3>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2 mb-4">
+                  <div>
+                    <label className="flex items-center gap-2 text-sm text-muted mb-2">
+                      <Mail className="w-4 h-4" /> Email
+                    </label>
+                    <input
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      placeholder="you@email.com"
+                      className="w-full bg-background border border-primary/30 rounded-lg px-3 py-2 text-text text-sm focus:outline-none focus:border-accent"
+                    />
+                  </div>
+                  <div>
+                    <label className="flex items-center gap-2 text-sm text-muted mb-2">
+                      <Phone className="w-4 h-4" /> SMS
+                    </label>
+                    <input
+                      value={phone}
+                      onChange={(event) => setPhone(event.target.value)}
+                      placeholder="+44 7xxx xxx xxx"
+                      className="w-full bg-background border border-primary/30 rounded-lg px-3 py-2 text-text text-sm focus:outline-none focus:border-accent"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-4 mb-4 text-sm text-muted">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={channelEmail}
+                      onChange={(event) => setChannelEmail(event.target.checked)}
+                    />
+                    Email reminders
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={channelSms}
+                      onChange={(event) => setChannelSms(event.target.checked)}
+                    />
+                    SMS reminders
+                  </label>
+                </div>
+
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {[24, 3, 1].map((hours) => (
+                    <button
+                      key={hours}
+                      onClick={() =>
+                        setReminders((current) =>
+                          current.includes(hours)
+                            ? current.filter((item) => item !== hours)
+                            : [...current, hours]
+                        )
+                      }
+                      className={`px-3 py-1 rounded-full text-xs border transition-colors ${
+                        reminders.includes(hours)
+                          ? 'border-accent bg-accent/20 text-accent'
+                          : 'border-primary/30 text-muted hover:border-accent/50'
+                      }`}
+                    >
+                      {hours}h before
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={saveNotifications}
+                    disabled={notifyStatus === 'saving'}
+                    className="btn-primary px-5 py-2 rounded-lg text-sm disabled:opacity-60"
+                  >
+                    {notifyStatus === 'saving' ? 'Saving...' : 'Save reminder preferences'}
+                  </button>
+                  <button
+                    onClick={requestNotifications}
+                    className="btn-secondary px-5 py-2 rounded-lg text-sm"
+                  >
+                    {notificationPermission === 'granted'
+                      ? 'Browser notifications enabled'
+                      : 'Enable browser notifications'}
+                  </button>
+                </div>
+
+                {notifyStatus === 'success' && (
+                  <p className="text-green-400 text-sm mt-3">Reminders saved. We&apos;ll notify you.</p>
+                )}
+                {notifyStatus === 'error' && (
+                  <p className="text-red-400 text-sm mt-3">Unable to save reminders. Please try again.</p>
+                )}
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
