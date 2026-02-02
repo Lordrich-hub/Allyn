@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Star, MapPin, Phone, Mail, Calendar, DollarSign, ChevronLeft, Heart, Share2, Clock } from 'lucide-react'
 
@@ -138,8 +139,10 @@ function getVendorById(id: string) {
   return ALL_VENDORS.find(v => v.id === id) || ALL_VENDORS[0];
 }
 
-export default function VendorPage({ params }: { params: { id: string } }) {
-  const VENDOR = getVendorById(params.id)
+export default function VendorPage({ params }: { params: Promise<{ id: string }> | { id: string } }) {
+  const routeParams = useParams()
+  const vendorId = routeParams?.id as string || '1'
+  const VENDOR = getVendorById(vendorId)
   const [selectedService, setSelectedService] = useState(VENDOR.services[0])
   const [bookingDate, setBookingDate] = useState('')
   const [bookingTime, setBookingTime] = useState('')
