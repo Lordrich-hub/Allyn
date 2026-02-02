@@ -10,7 +10,7 @@ export default function AboutPage() {
     {
       icon: <Heart className="w-8 h-8" />,
       title: 'Community First',
-      description: 'We prioritize the African community and support local entrepreneurs.',
+      description: 'We prioritize the African community and support local entrepreneurs and vendors.',
     },
     {
       icon: <Users className="w-8 h-8" />,
