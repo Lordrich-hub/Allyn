@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Star, MapPin, Phone, Mail, Calendar, DollarSign, ChevronLeft, Heart, Share2, Clock } from 'lucide-react'
+import { BeautifulCalendar } from '@/app/components/BeautifulCalendar'
+import { PaymentModal } from '@/app/components/PaymentModal'
 
 export const dynamic = 'force-dynamic'
 export const dynamicParams = true
@@ -992,6 +994,7 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
   const [bookingTime, setBookingTime] = useState('')
   const [isFavorited, setIsFavorited] = useState(false)
   const [bookingSuccess, setBookingSuccess] = useState(false)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
 
   // Get available time slots for selected date
   const availableTimeSlots = useMemo(() => {
@@ -1010,15 +1013,13 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
     })
   }, [bookingDate])
 
-  const handleBooking = () => {
-    if (bookingDate && bookingTime) {
-      setBookingSuccess(true)
-      setTimeout(() => {
-        setBookingSuccess(false)
-        setBookingDate('')
-        setBookingTime('')
-      }, 3000)
-    }
+  const handlePaymentConfirm = (method: string, depositAmount: number) => {
+    setBookingSuccess(true)
+    setTimeout(() => {
+      setBookingSuccess(false)
+      setBookingDate('')
+      setBookingTime('')
+    }, 3000)
   }
 
   return (
@@ -1121,88 +1122,101 @@ export default function VendorPage({ params }: { params: Promise<{ id: string }>
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="lg:col-span-1 card sticky top-20 h-fit"
+            className="lg:col-span-1"
           >
-            <h3 className="text-xl font-bold text-text mb-6">Book Service</h3>
+            <div className="card sticky top-20 h-fit">
+              <h3 className="text-xl font-bold text-text mb-6">Book Service</h3>
 
-            <div className="bg-primary border border-border rounded-lg p-4 mb-6">
-              <p className="text-sm text-muted mb-1">Selected</p>
-              <h4 className="font-bold text-text mb-1">{selectedService.name}</h4>
-              <p className="text-2xl font-bold text-accent">£{selectedService.price}</p>
-            </div>
+              <div className="bg-primary border border-border rounded-lg p-4 mb-6">
+                <p className="text-sm text-muted mb-1">Selected Service</p>
+                <h4 className="font-bold text-text mb-1">{selectedService.name}</h4>
+                <p className="text-2xl font-bold text-accent">£{selectedService.price}</p>
+                <p className="text-xs text-muted mt-2">+ 10% platform fee on completion</p>
+              </div>
 
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-text mb-2">
-                <Calendar className="w-4 h-4 inline mr-2" />
-                Preferred Date
-              </label>
-              <input
-                type="date"
-                value={bookingDate}
-                onChange={(e) => {
-                  setBookingDate(e.target.value)
-                  setBookingTime('')
-                }}
-                min={new Date().toISOString().split('T')[0]}
-                className="w-full bg-primary border border-border rounded-lg px-3 py-2 text-text focus-ring"
-              />
-            </div>
-
-            {bookingDate && (
               <div className="mb-6">
-                <label className="block text-sm font-medium text-text mb-2">
-                  <Clock className="w-4 h-4 inline mr-2" />
-                  Available Time Slots
-                </label>
-                {availableTimeSlots.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-2">
-                    {availableTimeSlots.map((time) => (
-                      <button
-                        key={time}
-                        onClick={() => setBookingTime(time)}
-                        className={`px-3 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
-                          bookingTime === time
-                            ? 'border-accent bg-accent/10 text-accent'
-                            : 'border-border text-muted hover:border-accent/50 hover:text-text'
-                        }`}
-                      >
-                        {time}
-                      </button>
-                    ))}
-                  </div>
-                ) : (
+                <p className="text-sm font-semibold text-text mb-3">Select Date</p>
+                <BeautifulCalendar
+                  onDateSelect={setBookingDate}
+                  selectedDate={bookingDate}
+                />
+              </div>
+
+              {bookingDate && (
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-text mb-3">
+                    <Clock className="w-4 h-4 inline mr-2" />
+                    Select Time Slot
+                  </label>
+                  {availableTimeSlots.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      {availableTimeSlots.map((time) => (
+                        <motion.button
+                          key={time}
+                          onClick={() => setBookingTime(time)}
+                          whileHover={{ scale: 1.05 }}
+                          className={`px-3 py-2 rounded-lg border-2 text-sm font-medium transition-all ${
+                            bookingTime === time
+                              ? 'border-accent bg-gradient-to-r from-accent/20 to-accent/10 text-accent'
+                              : 'border-border/50 text-muted hover:border-accent/50 hover:text-accent hover:bg-accent/5'
+                          }`}
+                        >
+                          {time}
+                        </motion.button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted text-sm bg-primary/50 rounded-lg p-4 text-center">
+                      No available slots for this date
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {!bookingDate && (
+                <div className="mb-6">
                   <p className="text-muted text-sm bg-primary/50 rounded-lg p-4 text-center">
-                    No available slots for this date. Please select another date.
+                    👆 Select a date to see available times
                   </p>
-                )}
-              </div>
-            )}
+                </div>
+              )}
 
-            {!bookingDate && (
-              <div className="mb-6">
-                <p className="text-muted text-sm bg-primary/50 rounded-lg p-4 text-center">
-                  Please select a date to see available time slots
-                </p>
-              </div>
-            )}
+              {bookingSuccess && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-4 text-green-400 text-sm text-center"
+                >
+                  ✓ Booking confirmed! Payment deposit reserved.
+                </motion.div>
+              )}
 
-            {bookingSuccess && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mb-4 text-green-400 text-sm text-center"
+              <motion.button
+                onClick={() => bookingDate && bookingTime && setShowPaymentModal(true)}
+                disabled={!bookingDate || !bookingTime}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full btn-primary py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                ✓ Booking request sent! We&apos;ll confirm shortly.
-              </motion.div>
-            )}
+                Proceed to Payment
+              </motion.button>
 
-            <button
-              onClick={handleBooking}
-              disabled={!bookingDate || !bookingTime}
-              className="w-full btn-primary py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Book Now
-            </button>
+              <p className="text-xs text-muted text-center mt-4">
+                💳 Secure payment powered by Stripe
+              </p>
+            </div>
+
+            <PaymentModal
+              isOpen={showPaymentModal}
+              onClose={() => setShowPaymentModal(false)}
+              paymentData={{
+                vendorName: VENDOR.name,
+                totalAmount: selectedService.price,
+                depositPercentage: 30,
+                platformFee: Math.round(selectedService.price * 0.1 * 100) / 100,
+              }}
+              onConfirm={handlePaymentConfirm}
+            />
           </motion.div>
         </div>
 

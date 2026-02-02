@@ -309,13 +309,17 @@ export default function HomePage() {
               <h4 className="font-bold text-text mb-4">Services</h4>
               <ul className="space-y-2">
                 {[
-                  { label: 'Hair & Beauty', category: 'Hair & Beauty' },
-                  { label: 'Food & Catering', category: 'Food & Catering' },
-                  { label: 'Tech Support', category: 'Tech Support' },
-                  { label: 'Event Planning', category: 'Event Planning' },
+                  { label: 'Hair & Beauty', href: '/category/hair-beauty' },
+                  { label: 'Food & Catering', href: '/category/food-catering' },
+                  { label: 'Fashion & Clothing', href: '/category/fashion-clothing' },
+                  { label: 'Tech Support', href: '/category/tech-support' },
+                  { label: 'Health & Wellness', href: '/category/health-wellness' },
+                  { label: 'Education & Training', href: '/category/education-training' },
+                  { label: 'Home Services', href: '/category/home-services' },
+                  { label: 'Event Planning', href: '/category/event-planning' },
                 ].map((item) => (
                   <li key={item.label}>
-                    <Link href={`/search?category=${encodeURIComponent(item.category)}`} className="text-muted hover:text-accent text-sm transition-colors">
+                    <Link href={item.href} className="text-muted hover:text-accent text-sm transition-colors">
                       {item.label}
                     </Link>
                   </li>
