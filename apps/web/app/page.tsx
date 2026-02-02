@@ -328,10 +328,10 @@ export default function HomePage() {
               <h4 className="font-bold text-text mb-4">Company</h4>
               <ul className="space-y-2">
                 {[
-                  { label: 'About Us', href: '/#about' },
-                  { label: 'Contact', href: '/#contact' },
-                  { label: 'Blog', href: '/#blog' },
-                  { label: 'Careers', href: '/#careers' },
+                  { label: 'About Us', href: '/about' },
+                  { label: 'Contact', href: '/contact' },
+                  { label: 'Blog', href: '/blog' },
+                  { label: 'Careers', href: '/careers' },
                 ].map((item) => (
                   <li key={item.label}>
                     <Link href={item.href} className="text-muted hover:text-accent text-sm transition-colors">
