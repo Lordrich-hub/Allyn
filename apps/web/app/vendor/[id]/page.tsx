@@ -6,6 +6,9 @@ import { useParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Star, MapPin, Phone, Mail, Calendar, DollarSign, ChevronLeft, Heart, Share2, Clock } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+export const dynamicParams = true
+
 // Mock vendor data - all vendors
 const ALL_VENDORS = [
   // Vendors 1-4 have full details
