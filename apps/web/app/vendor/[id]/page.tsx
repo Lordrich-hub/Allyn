@@ -136,7 +136,38 @@ const ALL_VENDORS = [
 ];
 
 function getVendorById(id: string) {
-  return ALL_VENDORS.find(v => v.id === id) || ALL_VENDORS[0];
+  const vendor = ALL_VENDORS.find(v => v.id === id);
+  if (!vendor) {
+    // Return a default vendor with basic info for IDs 5-30 that don't have full details yet
+    return {
+      id,
+      name: 'Vendor Not Found',
+      category: 'General',
+      location: 'London, UK',
+      phone: '+44 20 1234 5678',
+      email: 'info@allyn.co.uk',
+      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&h=400&fit=crop',
+      rating: 4.5,
+      reviewCount: 0,
+      verified: false,
+      bio: 'This vendor profile is being updated. Please check back soon for full details.',
+      services: [
+        { id: '1', name: 'General Service', description: 'Service details coming soon', price: 50, duration: '1 hour' },
+      ],
+      reviews: [],
+      availability: {
+        monday: ['10:00', '14:00'],
+        tuesday: ['10:00', '14:00'],
+        wednesday: ['10:00', '14:00'],
+        thursday: ['10:00', '14:00'],
+        friday: ['10:00', '14:00'],
+        saturday: ['10:00', '14:00'],
+        sunday: [],
+      },
+      bookedSlots: [],
+    };
+  }
+  return vendor;
 }
 
 export default function VendorPage({ params }: { params: Promise<{ id: string }> | { id: string } }) {
