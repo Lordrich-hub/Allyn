@@ -15,6 +15,7 @@ export async function signUp(input: SignUpInput) {
       options: {
         data: {
           name: parsed.name,
+          role: parsed.role,
         },
       },
     })
@@ -29,7 +30,7 @@ export async function signUp(input: SignUpInput) {
         id: data.user.id,
         name: parsed.name,
         email: parsed.email,
-        role: 'customer',
+        role: parsed.role,
       })
     }
 

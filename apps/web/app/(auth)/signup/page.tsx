@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -17,9 +17,16 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false)
   const [userType, setUserType] = useState<'customer' | 'vendor'>('customer')
   
-  const { register, handleSubmit, formState: { errors }, control } = useForm<SignUpInput>({
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm<SignUpInput>({
     resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      role: 'customer',
+    },
   })
+
+  useEffect(() => {
+    setValue('role', userType, { shouldValidate: true })
+  }, [setValue, userType])
 
   const onSubmit = async (data: SignUpInput) => {
     try {
@@ -104,6 +111,7 @@ export default function SignUpPage() {
 
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <input type="hidden" {...register('role')} />
         {/* Name Field */}
         <div>
           <label className="block text-sm font-medium text-text mb-2">
