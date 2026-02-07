@@ -103,7 +103,7 @@ export default function SignInPage() {
         <div>
           <div className="flex justify-between items-center mb-2">
             <label className="text-sm font-medium text-text">Password</label>
-            <Link href="/auth/reset" className="text-sm text-accent hover:underline">
+            <Link href="/reset" className="text-sm text-accent hover:underline">
               Forgot?
             </Link>
           </div>
@@ -153,7 +153,7 @@ export default function SignInPage() {
 
       {/* Sign Up Link */}
       <Link
-        href="/auth/signup"
+        href="/signup"
         className="w-full btn-secondary py-3 rounded-lg font-semibold text-center"
       >
         Create Account
