@@ -8,7 +8,6 @@ import { Mail, Lock, ArrowRight, AlertCircle, CheckCircle, Loader } from 'lucide
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SignInInput, signInSchema } from '@afroluxe/lib'
-import { signIn } from '@/app/actions/auth'
 
 export default function SignInPage() {
   const router = useRouter()
@@ -25,10 +24,16 @@ export default function SignInPage() {
       setLoading(true)
       setError('')
       
-      const result = await signIn(data)
-      
-      if (result.error) {
-        setError(result.error)
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        setError(result.error || 'Unable to sign in. Please try again.')
         return
       }
       

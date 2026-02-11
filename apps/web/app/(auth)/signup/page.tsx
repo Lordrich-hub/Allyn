@@ -8,7 +8,6 @@ import { Mail, Lock, User, AlertCircle, ArrowRight, CheckCircle, Loader } from '
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SignUpInput, signUpSchema } from '@afroluxe/lib'
-import { signUp } from '@/app/actions/auth'
 
 export default function SignUpPage() {
   const router = useRouter()
@@ -33,10 +32,16 @@ export default function SignUpPage() {
       setLoading(true)
       setError('')
       
-      const result = await signUp(data)
-      
-      if (result.error) {
-        setError(result.error)
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        setError(result.error || 'Failed to create account. Please try again.')
         return
       }
       
