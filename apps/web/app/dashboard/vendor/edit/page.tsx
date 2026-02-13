@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Building2, MapPin, Phone, Globe } from 'lucide-react'
+import { ArrowLeft, Building2, MapPin, Phone, Globe, Tag } from 'lucide-react'
 
 export default function VendorEditPage() {
   return (
@@ -58,6 +58,31 @@ export default function VendorEditPage() {
                 <input className="w-full bg-transparent outline-none text-sm" placeholder="https://" />
               </div>
             </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-text">Primary Category</label>
+              <div className="flex items-center gap-2 border border-border rounded-lg px-3 py-2">
+                <Tag className="w-4 h-4 text-muted" />
+                <input className="w-full bg-transparent outline-none text-sm" placeholder="Hair & Beauty" />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-text">Service Area</label>
+              <div className="flex items-center gap-2 border border-border rounded-lg px-3 py-2">
+                <MapPin className="w-4 h-4 text-muted" />
+                <input className="w-full bg-transparent outline-none text-sm" placeholder="London · 15 mile radius" />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 space-y-2">
+            <label className="text-sm font-semibold text-text">Business Bio</label>
+            <textarea
+              className="w-full bg-surface border border-border rounded-lg px-3 py-3 text-sm text-text"
+              rows={4}
+              placeholder="Share your story, specialties, and what clients can expect."
+            />
           </div>
 
           <div className="flex justify-end mt-8">

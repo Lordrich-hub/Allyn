@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Edit2, Trash2, DollarSign, Clock, Check, X } from 'lucide-react'
+import { Plus, Edit2, Trash2, DollarSign, Clock, Check, X, TrendingUp, Star } from 'lucide-react'
 import Link from 'next/link'
 
 const MOCK_SERVICES = [
@@ -13,6 +13,9 @@ const MOCK_SERVICES = [
     price: 80,
     duration: 180,
     active: true,
+    bookings: 12,
+    revenue: 960,
+    rating: 4.9,
   },
   {
     id: '2',
@@ -21,6 +24,9 @@ const MOCK_SERVICES = [
     price: 45,
     duration: 120,
     active: true,
+    bookings: 9,
+    revenue: 405,
+    rating: 4.7,
   },
   {
     id: '3',
@@ -29,6 +35,9 @@ const MOCK_SERVICES = [
     price: 150,
     duration: 240,
     active: true,
+    bookings: 6,
+    revenue: 900,
+    rating: 4.8,
   },
   {
     id: '4',
@@ -37,6 +46,9 @@ const MOCK_SERVICES = [
     price: 120,
     duration: 200,
     active: true,
+    bookings: 4,
+    revenue: 480,
+    rating: 4.6,
   },
 ]
 
@@ -56,6 +68,8 @@ export default function ServicesPage() {
 
   const activeCount = services.filter(s => s.active).length
   const totalEarningsPotential = services.reduce((sum, s) => sum + s.price, 0)
+  const totalRevenue = services.reduce((sum, s) => sum + s.revenue, 0)
+  const totalBookings = services.reduce((sum, s) => sum + s.bookings, 0)
 
   return (
     <div className="min-h-screen bg-background">
@@ -75,7 +89,7 @@ export default function ServicesPage() {
 
       <div className="container-custom py-8">
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -105,6 +119,24 @@ export default function ServicesPage() {
               <div>
                 <p className="text-muted text-sm">Earning Potential</p>
                 <p className="text-3xl font-bold text-text">£{totalEarningsPotential}</p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="card"
+          >
+            <div className="flex items-center gap-4">
+              <div className="bg-accent/10 p-3 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-accent" />
+              </div>
+              <div>
+                <p className="text-muted text-sm">Monthly Performance</p>
+                <p className="text-3xl font-bold text-text">£{totalRevenue}</p>
+                <p className="text-xs text-muted">{totalBookings} bookings</p>
               </div>
             </div>
           </motion.div>
@@ -142,7 +174,7 @@ export default function ServicesPage() {
                       </span>
                     </div>
                     <p className="text-muted text-sm mb-3">{service.description}</p>
-                    <div className="flex gap-6 text-sm">
+                    <div className="flex flex-wrap gap-6 text-sm">
                       <div className="flex items-center gap-2 text-accent">
                         <DollarSign className="w-4 h-4" />
                         £{service.price}
@@ -150,6 +182,14 @@ export default function ServicesPage() {
                       <div className="flex items-center gap-2 text-muted">
                         <Clock className="w-4 h-4" />
                         {service.duration} mins
+                      </div>
+                      <div className="flex items-center gap-2 text-muted">
+                        <Star className="w-4 h-4 text-accent" />
+                        {service.rating} rating
+                      </div>
+                      <div className="flex items-center gap-2 text-muted">
+                        <TrendingUp className="w-4 h-4 text-green-400" />
+                        £{service.revenue} · {service.bookings} bookings
                       </div>
                     </div>
                   </div>

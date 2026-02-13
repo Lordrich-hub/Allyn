@@ -2,7 +2,20 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { Search, Star, Shield, ArrowRight, TrendingUp, Users, Zap, Award, MapPin, Clock, CheckCircle, Heart, Share2, Sparkles } from 'lucide-react'
+import {
+  ArrowRight,
+  CheckCircle,
+  Heart,
+  MapPin,
+  Search,
+  Share2,
+  Shield,
+  Sparkles,
+  Star,
+  TrendingUp,
+  Users,
+  Zap,
+} from 'lucide-react'
 
 export default function HomePage() {
   const testimonials = [
@@ -40,7 +53,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
       <section className="relative overflow-hidden pt-12 pb-20">
         <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-accent-secondary/10" />
         <div className="absolute top-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
@@ -90,7 +102,6 @@ export default function HomePage() {
             </Link>
           </motion.div>
 
-          {/* Quick Stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -107,7 +118,6 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* Popular Categories Section */}
       <section className="container-custom py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -135,11 +145,8 @@ export default function HomePage() {
             { emoji: '📚', name: 'Education', count: '75+ vendors' },
             { emoji: '🏠', name: 'Home Services', count: '65+ vendors' },
             { emoji: '🎉', name: 'Event Planning', count: '50+ vendors' },
-          ].map((category, index) => (
-            <Link
-              key={category.name}
-              href={`/search?category=${encodeURIComponent(category.name)}`}
-            >
+          ].map((category) => (
+            <Link key={category.name} href={`/search?category=${encodeURIComponent(category.name)}`}>
               <motion.div
                 variants={itemVariants}
                 whileHover={{ scale: 1.05, y: -5 }}
@@ -154,7 +161,6 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* Why Choose Allyn Section */}
       <section className="container-custom py-16">
         <motion.div
           initial={{ opacity: 0 }}
@@ -204,7 +210,7 @@ export default function HomePage() {
               title: 'Community First',
               description: 'Supporting African entrepreneurs and service providers',
             },
-          ].map((feature, index) => (
+          ].map((feature) => (
             <motion.div
               key={feature.title}
               variants={itemVariants}
@@ -221,7 +227,6 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* Testimonials Section */}
       <section className="container-custom py-16">
         <motion.div
           initial={{ opacity: 0 }}
@@ -241,11 +246,7 @@ export default function HomePage() {
           className="grid grid-cols-1 md:grid-cols-3 gap-8"
         >
           {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              className="card p-8 relative"
-            >
+            <motion.div key={index} variants={itemVariants} className="card p-8 relative">
               <div className="flex gap-1 mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <Star key={i} className="w-5 h-5 fill-accent text-accent" />
@@ -262,7 +263,6 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* CTA Section */}
       <section className="container-custom py-16">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -271,30 +271,31 @@ export default function HomePage() {
           className="bg-gradient-to-br from-accent/15 to-accent-secondary/15 border border-accent/30 rounded-3xl p-12 text-center overflow-hidden relative"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-accent/5 via-transparent to-accent-secondary/5" />
-          
-          {/* Decorative Elements - Celebration */}
-          <div className="absolute bottom-10 left-10 opacity-20 pointer-events-none hidden lg:block">
-            <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="50" cy="50" r="40" fill="#E2B058" />
-              <path d="M50 20L55 40L75 45L55 50L50 70L45 50L25 45L45 40L50 20Z" fill="#C59F47" />
-            </svg>
-          </div>
-            >
+
+          <div className="relative">
+            <h2 className="text-4xl font-bold text-text mb-4">Ready to discover your next service?</h2>
+            <p className="text-muted text-lg max-w-2xl mx-auto mb-8">
+              Start exploring verified African service providers near you. Book with confidence and support the community.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/search" className="btn-primary px-8 py-4 rounded-lg font-semibold flex items-center gap-2 hover:scale-105 transition-transform">
                 <Search className="w-5 h-5" />
                 Start Exploring
                 <ArrowRight className="w-5 h-5" />
               </Link>
-            </motion.div>
+              <Link href="/become-vendor" className="btn-secondary px-8 py-4 rounded-lg font-semibold flex items-center gap-2 hover:scale-105 transition-transform">
+                Become a Vendor
+                <CheckCircle className="w-5 h-5" />
+              </Link>
+            </div>
           </div>
         </motion.div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-border bg-surface/50 mt-20">
         <div className="container-custom py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            {/* Company Info */}
             <div>
               <h3 className="text-xl font-bold text-gradient mb-4">Allyn</h3>
               <p className="text-muted text-sm leading-relaxed">Connecting you with premium African services across the UK.</p>
@@ -304,7 +305,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Quick Links */}
             <div>
               <h4 className="font-bold text-text mb-4">Services</h4>
               <ul className="space-y-2">
@@ -327,7 +327,6 @@ export default function HomePage() {
               </ul>
             </div>
 
-            {/* Company */}
             <div>
               <h4 className="font-bold text-text mb-4">Company</h4>
               <ul className="space-y-2">
@@ -346,7 +345,6 @@ export default function HomePage() {
               </ul>
             </div>
 
-            {/* Support */}
             <div>
               <h4 className="font-bold text-text mb-4">Support</h4>
               <ul className="space-y-2">
@@ -375,7 +373,13 @@ export default function HomePage() {
                 { name: 'Instagram', url: 'https://instagram.com/allynmarketplace' },
                 { name: 'Twitter', url: 'https://twitter.com/allynmarketplace' },
               ].map((social) => (
-                <a key={social.name} href={social.url} target="_blank" rel="noopener noreferrer" className="text-muted hover:text-accent text-sm transition-colors">
+                <a
+                  key={social.name}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted hover:text-accent text-sm transition-colors"
+                >
                   {social.name}
                 </a>
               ))}

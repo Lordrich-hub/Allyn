@@ -28,6 +28,11 @@ export default function AvailabilityPage() {
     }))
   )
   const [saving, setSaving] = useState(false)
+  const [buffer, setBuffer] = useState(20)
+  const [timeOff, setTimeOff] = useState([
+    { id: 't1', label: 'Family event', date: '2026-03-02' },
+    { id: 't2', label: 'Travel', date: '2026-03-10' },
+  ])
 
   const toggleDay = (dayIndex: number) => {
     const newSchedule = [...schedule]
@@ -74,6 +79,10 @@ export default function AvailabilityPage() {
     setSaving(false)
   }
 
+  const removeTimeOff = (id: string) => {
+    setTimeOff(timeOff.filter((item) => item.id !== id))
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container-custom py-8">
@@ -93,6 +102,34 @@ export default function AvailabilityPage() {
         </div>
 
         <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="card"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-xl font-bold text-text">Booking buffer</h2>
+                <p className="text-sm text-muted">Add time between appointments for cleanup or travel.</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setBuffer(Math.max(0, buffer - 10))}
+                  className="px-3 py-1 rounded-lg border border-border text-muted hover:text-text"
+                >
+                  -
+                </button>
+                <span className="text-sm font-semibold text-text">{buffer} min</span>
+                <button
+                  onClick={() => setBuffer(buffer + 10)}
+                  className="px-3 py-1 rounded-lg border border-border text-muted hover:text-text"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+            <div className="text-xs text-muted">Applied to all bookings automatically.</div>
+          </motion.div>
           {schedule.map((daySchedule, dayIndex) => (
             <motion.div
               key={daySchedule.day}
@@ -175,6 +212,37 @@ export default function AvailabilityPage() {
             </motion.div>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="card mt-10"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-xl font-bold text-text">Time off</h2>
+              <p className="text-sm text-muted">Block specific dates from bookings.</p>
+            </div>
+            <button className="btn-secondary px-4 py-2 rounded-lg text-sm">Add date</button>
+          </div>
+          <div className="space-y-3">
+            {timeOff.map((item) => (
+              <div key={item.id} className="flex items-center justify-between border border-border rounded-lg p-3">
+                <div>
+                  <p className="text-text font-semibold">{item.label}</p>
+                  <p className="text-xs text-muted">{item.date}</p>
+                </div>
+                <button
+                  onClick={() => removeTimeOff(item.id)}
+                  className="p-2 text-red-400 hover:bg-red-500/10 rounded transition-colors"
+                  aria-label="Remove time off"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </motion.div>
 
         {/* Save Button */}
         <div className="mt-8 flex justify-end">

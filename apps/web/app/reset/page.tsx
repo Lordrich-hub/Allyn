@@ -1,7 +1,5 @@
-'use client'
-
-import ResetPage from '../(auth)/reset/page'
+import { redirect } from 'next/navigation'
 
 export default function ResetRoute() {
-	return <ResetPage />
+  redirect('/become-vendor')
 }

@@ -10,6 +10,14 @@ const MOCK_REVIEWS = [
   { id: '3', name: 'Zainab M.', rating: 5, text: 'Highly recommended vendor!' },
 ]
 
+const RATING_BREAKDOWN = [
+  { stars: 5, count: 86 },
+  { stars: 4, count: 26 },
+  { stars: 3, count: 8 },
+  { stars: 2, count: 3 },
+  { stars: 1, count: 1 },
+]
+
 export default function VendorReviewsPage() {
   return (
     <div className="min-h-screen bg-background">
@@ -31,6 +39,31 @@ export default function VendorReviewsPage() {
         >
           <h1 className="text-2xl font-bold text-text mb-2">Customer Reviews</h1>
           <p className="text-muted mb-6">See what customers are saying about your services.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-primary/70 rounded-lg p-4">
+              <p className="text-sm text-muted">Average rating</p>
+              <p className="text-3xl font-bold text-text">4.9</p>
+              <p className="text-xs text-muted">124 total reviews</p>
+            </div>
+            <div className="md:col-span-2 bg-primary/70 rounded-lg p-4">
+              <p className="text-sm text-muted mb-3">Rating breakdown</p>
+              <div className="space-y-2">
+                {RATING_BREAKDOWN.map((row) => {
+                  const percent = Math.round((row.count / 124) * 100)
+                  return (
+                    <div key={row.stars} className="flex items-center gap-3">
+                      <span className="text-sm text-text w-10">{row.stars}★</span>
+                      <div className="flex-1 h-2 bg-surface rounded-full overflow-hidden">
+                        <div className="h-full bg-accent" style={{ width: `${percent}%` }} />
+                      </div>
+                      <span className="text-xs text-muted w-10">{percent}%</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
 
           <div className="space-y-4">
             {MOCK_REVIEWS.map((review) => (

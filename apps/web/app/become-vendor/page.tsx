@@ -10,9 +10,6 @@ import {
   ShieldCheck,
   Wallet,
 } from 'lucide-react'
-import { Badge } from '@/components/ui/Badge'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
 
 const sora = Sora({ subsets: ['latin'], weight: ['400', '600', '700'] })
 
@@ -80,10 +77,10 @@ export default function BecomeVendorPage() {
         <div className="container-custom relative py-20 lg:py-28">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <Badge variant="premium" className="mb-6">
+              <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/20 px-4 py-2 text-xs font-semibold text-accent">
                 <BadgeCheck className="h-4 w-4" />
                 Become a verified vendor
-              </Badge>
+              </span>
               <h1
                 className={`${sora.className} text-4xl md:text-6xl font-bold text-text leading-tight`}
               >
@@ -95,21 +92,21 @@ export default function BecomeVendorPage() {
               </p>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
                 <Link href="/become-vendor">
-                  <Button size="lg" className="group">
+                  <span className="btn-primary inline-flex items-center gap-2 text-lg group">
                     Request vendor onboarding
                     <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                  </span>
                 </Link>
                 <Link href="/search">
-                  <Button size="lg" variant="secondary">
+                  <span className="btn-secondary inline-flex items-center text-lg">
                     View the marketplace
-                  </Button>
+                  </span>
                 </Link>
               </div>
             </div>
 
             <div className="space-y-6">
-              <Card className="bg-surface/90 border-accent/20">
+              <div className="card bg-surface/90 border-accent/20">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm uppercase tracking-wide text-muted">Next available</p>
@@ -122,9 +119,9 @@ export default function BecomeVendorPage() {
                 <p className="mt-4 text-muted">
                   Get listed quickly after verification and start receiving requests.
                 </p>
-              </Card>
+              </div>
 
-              <Card className="bg-surface/90 border-accent-secondary/20">
+              <div className="card bg-surface/90 border-accent-secondary/20">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm uppercase tracking-wide text-muted">Vendor support</p>
@@ -137,9 +134,9 @@ export default function BecomeVendorPage() {
                 <p className="mt-4 text-muted">
                   Dedicated onboarding and a team that helps you succeed.
                 </p>
-              </Card>
+              </div>
 
-              <Card className="bg-surface/90 border-border">
+              <div className="card bg-surface/90 border-border">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm uppercase tracking-wide text-muted">Performance</p>
@@ -152,7 +149,7 @@ export default function BecomeVendorPage() {
                 <p className="mt-4 text-muted">
                   See your booking trends, ratings, and repeat customers.
                 </p>
-              </Card>
+              </div>
             </div>
           </div>
         </div>
@@ -166,17 +163,19 @@ export default function BecomeVendorPage() {
               Built to help you win
             </h2>
           </div>
-          <Badge variant="verified">Trusted marketplace</Badge>
+          <span className="inline-flex items-center rounded-full border border-accent/30 bg-accent/10 px-4 py-2 text-xs font-semibold text-accent">
+            Trusted marketplace
+          </span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {benefits.map((benefit) => (
-            <Card key={benefit.title}>
+            <div key={benefit.title} className="card">
               <div className="h-12 w-12 rounded-2xl bg-accent/10 text-accent flex items-center justify-center">
                 {benefit.icon}
               </div>
               <h3 className="mt-5 text-xl font-bold text-text">{benefit.title}</h3>
               <p className="mt-3 text-muted">{benefit.description}</p>
-            </Card>
+            </div>
           ))}
         </div>
       </section>
@@ -195,7 +194,7 @@ export default function BecomeVendorPage() {
           </div>
           <div className="space-y-4">
             {steps.map((step, index) => (
-              <Card key={step.title} className="bg-surface/80">
+              <div key={step.title} className="card bg-surface/80">
                 <div className="flex items-start gap-4">
                   <div className="h-10 w-10 rounded-full bg-accent/15 text-accent flex items-center justify-center font-semibold">
                     {index + 1}
@@ -205,7 +204,7 @@ export default function BecomeVendorPage() {
                     <p className="mt-2 text-muted">{step.description}</p>
                   </div>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         </div>
@@ -213,7 +212,7 @@ export default function BecomeVendorPage() {
 
       <section className="container-custom py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card className="bg-gradient-to-br from-accent/10 to-transparent border-accent/20">
+          <div className="card bg-gradient-to-br from-accent/10 to-transparent border-accent/20">
             <h3 className={`${sora.className} text-2xl font-bold text-text`}>
               What we need from you
             </h3>
@@ -228,9 +227,9 @@ export default function BecomeVendorPage() {
             <p className="mt-6 text-sm text-muted">
               Have more questions? Our team will walk you through each step.
             </p>
-          </Card>
+          </div>
 
-          <Card className="bg-gradient-to-br from-accent-secondary/10 to-transparent border-accent-secondary/20">
+          <div className="card bg-gradient-to-br from-accent-secondary/10 to-transparent border-accent-secondary/20">
             <h3 className={`${sora.className} text-2xl font-bold text-text`}>
               Support from day one
             </h3>
@@ -258,12 +257,12 @@ export default function BecomeVendorPage() {
                 </div>
               </div>
             </div>
-          </Card>
+          </div>
         </div>
       </section>
 
       <section className="container-custom pb-20">
-        <Card className="text-center bg-gradient-to-r from-accent/15 via-transparent to-accent-secondary/15 border-accent/20">
+        <div className="card text-center bg-gradient-to-r from-accent/15 via-transparent to-accent-secondary/15 border-accent/20">
           <div className="max-w-2xl mx-auto">
             <h2 className={`${sora.className} text-3xl md:text-4xl font-bold text-text`}>
               Ready to become a vendor?
@@ -273,16 +272,18 @@ export default function BecomeVendorPage() {
             </p>
             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
               <Link href="/become-vendor">
-                <Button size="lg">Request vendor onboarding</Button>
+                <span className="btn-primary inline-flex items-center text-lg">
+                  Request vendor onboarding
+                </span>
               </Link>
               <Link href="/search">
-                <Button size="lg" variant="outline">
+                <span className="inline-flex items-center rounded-lg border-2 border-accent px-6 py-3 text-lg font-semibold text-accent hover:bg-accent/10 transition-colors">
                   Explore the marketplace
-                </Button>
+                </span>
               </Link>
             </div>
           </div>
-        </Card>
+        </div>
       </section>
     </div>
   )
