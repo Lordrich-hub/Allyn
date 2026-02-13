@@ -15,7 +15,7 @@ export default function HelpPage() {
       questions: [
         {
           q: 'How do I create an account?',
-          a: 'Click the "Sign Up" button on the homepage. Enter your email, create a password, and complete your profile. You\'re ready to browse and book services!',
+          a: 'Account creation is paused while we finish vendor onboarding. You can still browse services, and we will reopen sign-ups soon.',
         },
         {
           q: 'How do I search for services?',
@@ -23,7 +23,7 @@ export default function HelpPage() {
         },
         {
           q: 'How do I become a vendor?',
-          a: 'Sign up for an account, then navigate to your dashboard. Look for "List Your Services" and complete the vendor registration form with your service details.',
+          a: 'Visit the Become a Vendor page to request onboarding. Our team will follow up with next steps and verification details.',
         },
       ],
     },
@@ -53,7 +53,7 @@ export default function HelpPage() {
       questions: [
         {
           q: 'How do I update my service availability?',
-          a: 'Log into your vendor dashboard and go to "Availability". You can set your working hours and block dates when you\'re not available.',
+          a: 'Once you are onboarded, you can manage availability from the vendor dashboard. We will share access details during onboarding.',
         },
         {
           q: 'How do I receive payments?',
@@ -74,7 +74,7 @@ export default function HelpPage() {
       questions: [
         {
           q: 'How do I reset my password?',
-          a: 'Click "Forgot Password" on the login page. Enter your email and follow the instructions sent to reset your password.',
+          a: 'Password resets are paused while login is disabled. Contact support if you need urgent access restored.',
         },
         {
           q: 'How is my data protected?',

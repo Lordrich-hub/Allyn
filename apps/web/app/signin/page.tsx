@@ -1,7 +1,5 @@
-'use client'
-
-import SignInPage from '../(auth)/signin/page'
+import { redirect } from 'next/navigation'
 
 export default function SignInRoute() {
-	return <SignInPage />
+  redirect('/become-vendor')
 }

@@ -83,7 +83,7 @@ export default function HomePage() {
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
-              href="/signup"
+              href="/become-vendor"
               className="btn-secondary inline-flex items-center justify-center px-8 py-4 rounded-lg text-lg font-semibold hover:scale-105 transition-transform"
             >
               Become a Vendor

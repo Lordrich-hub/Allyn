@@ -1,7 +1,5 @@
-'use client'
-
-import SignUpPage from '../(auth)/signup/page'
+import { redirect } from 'next/navigation'
 
 export default function SignUpRoute() {
-	return <SignUpPage />
+  redirect('/become-vendor')
 }

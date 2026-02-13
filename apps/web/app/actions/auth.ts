@@ -77,5 +77,5 @@ export async function signIn(input: SignInInput) {
 export async function signOut() {
   const supabase = createServerClient()
   await supabase.auth.signOut()
-  redirect('/signin')
+  redirect('/become-vendor')
 }

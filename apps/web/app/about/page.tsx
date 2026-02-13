@@ -190,7 +190,7 @@ export default function AboutPage() {
             <Link href="/search" className="btn-primary px-8 py-3 rounded-lg font-semibold inline-block">
               Browse Services
             </Link>
-            <Link href="/signup" className="btn-secondary px-8 py-3 rounded-lg font-semibold inline-block">
+            <Link href="/become-vendor" className="btn-secondary px-8 py-3 rounded-lg font-semibold inline-block">
               Become a Vendor
             </Link>
           </div>

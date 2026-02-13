@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Search, MessageSquare, User } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 export function Navigation() {
@@ -13,11 +12,6 @@ export function Navigation() {
     const signedIn = pathname?.startsWith('/dashboard') || pathname?.startsWith('/chat')
     setIsSignedIn(signedIn)
   }, [pathname])
-  
-  // Hide navigation on auth pages
-  if (pathname?.startsWith('/signin') || pathname?.startsWith('/signup')) {
-    return null
-  }
   
   // Only show auth buttons on home page or search page
   const isHomePage = pathname === '/'
@@ -41,14 +35,9 @@ export function Navigation() {
                 </div>
               </Link>
             ) : (isHomePage || isSearchPage) ? (
-              <>
-                <Link href="/signin" className="btn-secondary text-sm">
-                  Sign In
-                </Link>
-                <Link href="/signup" className="btn-primary text-sm">
-                  Sign Up
-                </Link>
-              </>
+              <Link href="/become-vendor" className="btn-primary text-sm">
+                Become a Vendor
+              </Link>
             ) : null}
           </div>
 
@@ -61,14 +50,9 @@ export function Navigation() {
                 </div>
               </Link>
             ) : (isHomePage || isSearchPage) ? (
-              <>
-                <Link href="/signin" className="btn-secondary text-sm px-3 py-2">
-                  Sign In
-                </Link>
-                <Link href="/signup" className="btn-primary text-sm px-3 py-2">
-                  Sign Up
-                </Link>
-              </>
+              <Link href="/become-vendor" className="btn-primary text-sm px-3 py-2">
+                Become a Vendor
+              </Link>
             ) : null}
           </div>
         </div>
