@@ -7,6 +7,25 @@ const nextConfig = {
   experimental: {
     missingSuspenseWithCSRBailout: false,
   },
+  async redirects() {
+    return [
+      {
+        source: '/signin',
+        destination: '/become-vendor',
+        permanent: false,
+      },
+      {
+        source: '/signup',
+        destination: '/become-vendor',
+        permanent: false,
+      },
+      {
+        source: '/reset',
+        destination: '/become-vendor',
+        permanent: false,
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
